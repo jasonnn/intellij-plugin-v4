@@ -22,6 +22,14 @@ def latest_antlr4():
     jarname = "antlr-4.5-complete.jar"
     download("http://www.antlr.org/download/" + jarname, "lib")
 
+
+def latest_antlr4_sources():
+    download("https://github.com/antlr/antlr4/archive/4.5.zip", "lib/cache")
+    mkdir("lib/src")
+    unjar("lib/cache/4.5.zip", "lib/src")
+
+
+
 def parsers():
     require(latest_antlr4)
     antlr4("src/grammars", "gen", version="4.5",
@@ -34,6 +42,7 @@ def clean():
 
 def all():
     require(parsers)
+    require(latest_antlr4_sources)
 
 
 processargs(globals())
