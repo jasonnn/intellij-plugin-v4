@@ -24,10 +24,10 @@ def latest_antlr4():
 
 
 def latest_antlr4_sources():
-    download("https://github.com/antlr/antlr4/archive/4.5.zip", "lib")
+    download("https://github.com/antlr/antlr4/archive/4.5.zip", "lib/cache")
     mkdir("lib/src")
-    unjar("lib/4.5.zip", "lib/src")
-    rmfile("lib/4.5.zip")
+    unjar("lib/cache/4.5.zip", "lib/src")
+
 
 
 def parsers():
