@@ -2,7 +2,6 @@ package org.antlr.intellij.plugin.formatter;
 
 import com.intellij.application.options.IndentOptionsEditor;
 import com.intellij.application.options.SmartIndentOptionsEditor;
-import com.intellij.json.JsonLanguage;
 import com.intellij.lang.Language;
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
@@ -45,10 +44,9 @@ public class AntlrLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSet
     @Nullable
     @Override
     public CommonCodeStyleSettings getDefaultCommonSettings() {
-        CommonCodeStyleSettings commonSettings = new CommonCodeStyleSettings(JsonLanguage.INSTANCE);
-        // CommonCodeStyleSettings.IndentOptions indentOptions = commonSettings.initIndentOptions();
-        //  indentOptions.INDENT_SIZE = 2;
-
+        CommonCodeStyleSettings commonSettings = new CommonCodeStyleSettings(getLanguage());
+        CommonCodeStyleSettings.IndentOptions indentOptions = commonSettings.initIndentOptions();
+        indentOptions.INDENT_SIZE = 2;
         return commonSettings;
     }
 }

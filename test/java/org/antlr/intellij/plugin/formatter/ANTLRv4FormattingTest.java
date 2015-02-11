@@ -11,6 +11,13 @@ public class ANTLRv4FormattingTest extends FormatterTestCase {
         Logger.setFactory(TestLoggerFactory.class);
     }
 
+    public void testBasics_Rules() throws Exception {
+        doTest();
+    }
+
+    public void testBasics_Spacing() throws Exception {
+        doTest();
+    }
 
     public void testFormattingExamples() throws Exception {
         doTest();
