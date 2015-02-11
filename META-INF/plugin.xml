@@ -152,6 +152,9 @@ For really big files and
                 implementationClass="org.antlr.intellij.plugin.structview.ANTLRv4StructureViewFactory"/>
       <lang.foldingBuilder language="ANTLRv4" implementationClass="org.antlr.intellij.plugin.folding.ANTLRv4FoldingBuilder" />
 
+      <lang.formatter language="ANTLRv4" implementationClass="org.antlr.intellij.plugin.formatter.ANTLRv4FormattingModelBuilder" />
+      <codeStyleSettingsProvider implementation="org.antlr.intellij.plugin.formatter.AntlrCodeStyleSettingsProvider" />
+      <langCodeStyleSettingsProvider implementation="org.antlr.intellij.plugin.formatter.AntlrLanguageCodeStyleSettingsProvider" />
 
       <externalAnnotator language="ANTLRv4" implementationClass="org.antlr.intellij.plugin.ANTLRv4ExternalAnnotator"/>
       <lang.findUsagesProvider language="ANTLRv4"
