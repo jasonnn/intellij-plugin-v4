@@ -1,39 +1,39 @@
 grammar FormattingExamples;
 
-//erlang
-tryCatch : 'catch' tryClauses               'end'
-         | 'catch' tryClauses 'after' exprs 'end'
-         |                    'after' exprs 'end' ;
+        //erlang
+        tryCatch : 'catch' tryClauses               'end'
+                           | 'catch' tryClauses 'after' exprs 'end'
+                           | 'after' exprs 'end';
 
-binary : '<<'             '>>'
-       | '<<' binElements '>>' ;
+        binary : '<<'             '>>'
+                         | '<<' binElements '>>';
 
-binaryType : '<<'                             '>>'
-           | '<<' binBaseType                 '>>'
-           | '<<'                 binUnitType '>>'
-           | '<<' binBaseType ',' binUnitType '>>'
-           ;
+        binaryType : '<<'                             '>>'
+                             | '<<' binBaseType                 '>>'
+                             | '<<'                 binUnitType '>>'
+                             | '<<' binBaseType ',' binUnitType '>>'
+                ;
 
-binBaseType : tokVar ':'            type ;
+        binBaseType : tokVar ':'            type;
 
-binUnitType : tokVar ':' tokVar '*' type ;
+        binUnitType : tokVar ':' tokVar '*' type;
 
-//antlr
+                //antlr
 
-PUBLIC       : 'public'               ;
-PRIVATE      : 'private'              ;
-RETURNS      : 'returns'              ;
-LOCALS       : 'locals'               ;
-THROWS       : 'throws'               ;
-CATCH        : 'catch'                ;
-FINALLY      : 'finally'              ;
-MODE         : 'mode'                 ;
+        PUBLIC : 'public';
+        PRIVATE : 'private';
+        RETURNS : 'returns';
+        LOCALS : 'locals';
+        THROWS : 'throws';
+        CATCH : 'catch';
+        FINALLY : 'finally';
+        MODE : 'mode';
 
-mode LexerCharSet;
+        mode LexerCharSet;
 
-	LEXER_CHAR_SET_BODY
-		:	(	~[\]\\]
-			|	'\\' .
-			)+
-                                        -> more
-		;
+                LEXER_CHAR_SET_BODY
+                        : (    ~[\]\\]
+                                       | '\\' .
+                                  )+
+                                  -> more
+                        ;

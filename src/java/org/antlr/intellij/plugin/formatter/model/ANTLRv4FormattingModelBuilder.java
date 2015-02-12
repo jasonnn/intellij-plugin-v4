@@ -1,4 +1,4 @@
-package org.antlr.intellij.plugin.formatter;
+package org.antlr.intellij.plugin.formatter.model;
 
 import com.intellij.formatting.*;
 import com.intellij.lang.ASTNode;
@@ -6,7 +6,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
-import com.intellij.psi.tree.IElementType;
 import org.antlr.intellij.adaptor.lexer.TokenElementType;
 import org.antlr.intellij.plugin.ANTLRv4Language;
 import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
@@ -33,7 +32,7 @@ public class ANTLRv4FormattingModelBuilder implements FormattingModelBuilder {
     @NotNull
     @Override
     public FormattingModel createModel(PsiElement element, CodeStyleSettings settings) {
-        AntlrBlock block = new AntlrBlock(element.getNode(), null, null, Indent.getNoneIndent(), null, settings);
+        AntlrBlock block = AntlrBlockFactory.createBlock(element.getNode(),null,null,Indent.getNoneIndent(),null,settings); //new AntlrBlock(element.getNode(), null, null, Indent.getNoneIndent(), null, settings);
         return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(), block, settings);
 
     }

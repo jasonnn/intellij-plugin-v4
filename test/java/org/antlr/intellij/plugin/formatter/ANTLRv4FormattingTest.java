@@ -5,7 +5,9 @@ import com.intellij.psi.formatter.FormatterTestCase;
 import com.intellij.testFramework.IdeaTestCase;
 import com.intellij.testFramework.TestLoggerFactory;
 import org.antlr.intellij.plugin.ANTLRTestData;
-
+/*
+note: right now these tests just test against changes in formatting results, not correctness
+ */
 public class ANTLRv4FormattingTest extends FormatterTestCase {
     static {
         Logger.setFactory(TestLoggerFactory.class);
