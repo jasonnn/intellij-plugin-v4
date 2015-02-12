@@ -13,4 +13,7 @@ public class AntlrCodeStyleSettings extends CustomCodeStyleSettings {
     protected AntlrCodeStyleSettings(CodeStyleSettings container) {
         super(ANTLRv4Language.INSTANCE.getID(), container);
     }
+
+    public boolean SPACE_AFTER_COLON = true;
+    public boolean SPACE_BEFORE_COLON = true;
 }

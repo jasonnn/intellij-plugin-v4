@@ -13,35 +13,50 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by jason on 2/10/15.
- * @see  com.intellij.json.formatter.JsonCodeStyleSettingsProvider
+ *
+ * @see com.intellij.json.formatter.JsonCodeStyleSettingsProvider
  */
-public class AntlrCodeStyleSettingsProvider  extends CodeStyleSettingsProvider {
+public class AntlrCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
+
+    static class AntlrSettingsPage extends CodeStyleAbstractConfigurable {
+        AntlrSettingsPage(CodeStyleSettings settings, CodeStyleSettings originalSettings) {
+            super(settings, originalSettings, "ANTLRv4");
+        }
+
+        @Override
+        protected CodeStyleAbstractPanel createPanel(CodeStyleSettings settings) {
+            return new AntlrSettingsPanel(getCurrentSettings(), settings);
+        }
+
+        @Nullable
+        @Override
+        public String getHelpTopic() {
+            return "reference.settingsdialog.codestyle.antlr";
+        }
+    }
+
+    static class AntlrSettingsPanel extends TabbedLanguageCodeStylePanel {
+        AntlrSettingsPanel(CodeStyleSettings currentSettings, CodeStyleSettings settings) {
+            super(ANTLRv4Language.INSTANCE, currentSettings, settings);
+        }
+
+        @Override
+        protected void initTabs(CodeStyleSettings settings) {
+            addIndentOptionsTab(settings);
+            addSpacesTab(settings);
+            addBlankLinesTab(settings);
+            addWrappingAndBracesTab(settings);
+            addTab(new AntlrCodeStylePanel(settings));
+        }
+    }
+
     @NotNull
     @Override
     public Configurable createSettingsPage(CodeStyleSettings settings, CodeStyleSettings originalSettings) {
-        return new CodeStyleAbstractConfigurable(settings,originalSettings,"antlr"){
-            @Override
-            protected CodeStyleAbstractPanel createPanel(CodeStyleSettings settings) {
-                final CodeStyleSettings currentSettings = getCurrentSettings();
-                return new TabbedLanguageCodeStylePanel(ANTLRv4Language.INSTANCE, currentSettings, settings) {
-                    @Override
-                    protected void initTabs(CodeStyleSettings settings) {
-                        addIndentOptionsTab(settings);
-                        addSpacesTab(settings);
-                        addBlankLinesTab(settings);
-                        addWrappingAndBracesTab(settings);
-                        addTab(new AntlrCodeStylePanel(settings));
-                    }
-                };
-            }
-            @Nullable
-            @Override
-            public String getHelpTopic() {
-                return "reference.settingsdialog.codestyle.antlr";
-            }
-
-        };
+        return new AntlrSettingsPage(settings, originalSettings);
     }
+
+
     @Nullable
     @Override
     public String getConfigurableDisplayName() {

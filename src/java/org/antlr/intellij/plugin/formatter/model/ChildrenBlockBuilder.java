@@ -22,6 +22,12 @@ public class ChildrenBlockBuilder extends AntlrBlockFactory {
         if (include(child)) blocks.add(createBlock(child));
     }
 
+    public void addChildrenOf(ASTNode parent) {
+        for (ASTNode child = parent.getFirstChildNode(); child != null; child = child.getTreeNext()) {
+            addChild(child);
+        }
+    }
+
     protected boolean include(ASTNode node) {
         return !isWhitespaceOrEmpty(node);
     }

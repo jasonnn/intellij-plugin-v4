@@ -18,10 +18,10 @@ import java.util.List;
  * @see com.intellij.json.formatter.JsonBlock
  */
 public class AntlrBlock extends AbstractBlock {
-    private final AntlrBlock parent;
+    final AntlrBlock parent;
     final CodeStyleSettings mySettings;
-    private final Indent indent;
-    private final SpacingBuilder mySpacingBuilder;
+    final Indent indent;
+    final SpacingBuilder mySpacingBuilder;
 
 
     protected AntlrBlock(@NotNull ASTNode node,
@@ -63,6 +63,10 @@ public class AntlrBlock extends AbstractBlock {
         return myNode.getFirstChildNode() == null;
     }
 
+    @Override
+    public Indent getIndent() {
+        return indent;
+    }
 
     protected AntlrCodeStyleSettings getCustomSettings() {
         return mySettings.getCustomSettings(AntlrCodeStyleSettings.class);

@@ -15,17 +15,32 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by jason on 2/10/15.
+ *
  * @see com.intellij.json.formatter.JsonCodeStylePanel
  */
 public class AntlrCodeStylePanel extends CodeStyleAbstractPanel {
 
-    static final String SAMPLE = "grammar todo;";
+    static final String SAMPLE = "grammar Basics_Rules;\n" +
+            "\n" +
+            "//every rule should get it's own line.\n" +
+            "A : [aA]; B : [bB]; C:[cC];\n" +
+            "\n" +
+            "//vertical alignment:\n" +
+            "a : A;\n" +
+            "bb : B B;\n" +
+            "ccc : C C C;";
+
+    JPanel myPanel;
 
     protected AntlrCodeStylePanel(@NotNull CodeStyleSettings settings) {
         super(ANTLRv4Language.INSTANCE, null, settings);
+        myPanel = new JPanel(new BorderLayout());
+        myPanel.add(new JLabel("todo"), BorderLayout.CENTER);
+
     }
 
     @Override
@@ -53,7 +68,7 @@ public class AntlrCodeStylePanel extends CodeStyleAbstractPanel {
 
     @Override
     public void apply(CodeStyleSettings settings) throws ConfigurationException {
-
+        System.out.println("AntlrCodeStylePanel.apply");
     }
 
     @Override
@@ -64,11 +79,11 @@ public class AntlrCodeStylePanel extends CodeStyleAbstractPanel {
     @Nullable
     @Override
     public JComponent getPanel() {
-        return null;
+        return myPanel;
     }
 
     @Override
     protected void resetImpl(CodeStyleSettings settings) {
-
+        System.out.println("AntlrCodeStylePanel.resetImpl");
     }
 }

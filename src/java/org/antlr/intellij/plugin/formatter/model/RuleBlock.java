@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 public class RuleBlock extends AntlrBlock {
     protected RuleBlock(@NotNull ASTNode node, @Nullable AntlrBlock parent, @NotNull CodeStyleSettings settings) {
         super(node, Wrap.createWrap(WrapType.NONE, false), Alignment.createAlignment(), Indent.getAbsoluteNoneIndent(), parent, settings);
-        System.out.println("RuleBlock.RuleBlock");
+      //  System.out.println("RuleBlock.RuleBlock");
     }
 
     @Override
