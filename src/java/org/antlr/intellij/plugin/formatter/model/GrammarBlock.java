@@ -7,13 +7,11 @@ import com.intellij.formatting.Wrap;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.TokenSet;
 import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
 import org.antlr.intellij.plugin.parser.ANTLRv4Parser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,41 +24,25 @@ public class GrammarBlock extends AntlrBlock {
 
     @Override
     protected List<Block> buildChildren() {
-        AntlrBlockFactory factory = new AntlrBlockFactory(this);
-        List<Block> children = new ArrayList<Block>();
+        ChildrenBlockBuilder factory = new ChildrenBlockBuilder(this);
         for (ASTNode child = myNode.getFirstChildNode(); child != null; child = child.getTreeNext()) {
-            IElementType type = child.getElementType();
-            if (type == RULES) handleRules(children, factory, child);
-            else if (includeChild(child)) children.add(factory.createBlock(child));
+            if (child.getElementType() == RULES) handleRules(factory, child);
+            else factory.addChild(child);
         }
-        return children;
+        return factory.blocks;
     }
 
-    private void handleRules(List<Block> blocks, AntlrBlockFactory factory, ASTNode rulesNode) {
+    private void handleRules(ChildrenBlockBuilder factory, ASTNode rulesNode) {
         for (ASTNode ruleSpec = rulesNode.getFirstChildNode(); ruleSpec != null; ruleSpec = ruleSpec.getTreeNext()) {
-            //could also be whitespace
             if (ruleSpec.getElementType() == RULESPEC) {
                 for (ASTNode spec = ruleSpec.getFirstChildNode(); spec != null; spec = spec.getTreeNext()) {
-                    if (RULESPECS.contains(spec.getElementType())) {
-                        blocks.add(factory.createBlock(spec));
-                    }
-                    else if (includeChild(spec)) blocks.add(factory.createBlock(spec));
+                    factory.addChild(spec);
                 }
-            }
-            else if (includeChild(ruleSpec)) blocks.add(factory.createBlock(ruleSpec));
-
+            } else factory.addChild(ruleSpec);
         }
     }
 
-    private static final TokenSet RULESPECS = TokenSet.create(
-            ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_parserRuleSpec),
-            ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerRule)
-    );
 
-    private static final TokenSet RULE_BLOCKS = TokenSet.create(
-            ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerBlock),
-            ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleBlock)
-    );
 
 
     static final IElementType RULESPEC = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleSpec);

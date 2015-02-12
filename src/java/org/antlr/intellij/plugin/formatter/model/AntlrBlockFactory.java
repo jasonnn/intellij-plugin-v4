@@ -6,6 +6,7 @@ import com.intellij.formatting.Wrap;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 import org.antlr.intellij.adaptor.lexer.RuleElementType;
 import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
 import org.antlr.intellij.plugin.parser.ANTLRv4Parser;
@@ -54,14 +55,28 @@ public class AntlrBlockFactory {
         if (type == GRAMMAR_SPEC) {
             return new GrammarBlock(node, wrap, alignment, indent, parent, settings);
         }
-        if (type == RULESPEC) {
-            return new RuleBlock(node, wrap, alignment, indent, parent, settings);
+        if (RULESPECS.contains(type)) {
+            return new RuleBlock(node, parent, settings);
+        }
+        if (RULE_BLOCKS.contains(type)) {
+            return new RuleBlockBlock(node, wrap, alignment, indent, parent, settings);
         }
 
         return new AntlrBlock(node, wrap, alignment, indent, parent, settings);
     }
 
     static final IElementType GRAMMAR_SPEC = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_grammarSpec);
-    private static final RuleElementType RULESPEC = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleSpec);
 
+    static final RuleElementType RULESPEC = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleSpec);
+
+
+    static final TokenSet RULESPECS = TokenSet.create(
+            ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_parserRuleSpec),
+            ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerRule)
+    );
+
+    static final TokenSet RULE_BLOCKS = TokenSet.create(
+            ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerBlock),
+            ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleBlock)
+    );
 }

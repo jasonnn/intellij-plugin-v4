@@ -2,7 +2,6 @@ package org.antlr.intellij.plugin.formatter.model;
 
 import com.intellij.formatting.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.formatter.common.AbstractBlock;
@@ -11,7 +10,6 @@ import org.antlr.intellij.plugin.formatter.AntlrCodeStyleSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,26 +40,17 @@ public class AntlrBlock extends AbstractBlock {
 
     @Override
     protected List<Block> buildChildren() {
-        List<Block> children = new ArrayList<Block>();
+        ChildrenBlockBuilder childrenFactory = new ChildrenBlockBuilder(this);
+        doBuildChildren(childrenFactory);
+        return childrenFactory.blocks;
+    }
+
+    protected void doBuildChildren(ChildrenBlockBuilder builder) {
         for (ASTNode child = myNode.getFirstChildNode(); child != null; child = child.getTreeNext()) {
-            if (includeChild(child)) {
-                children.add(makeSubBlock(child));
-            }
+            builder.addChild(child);
         }
-        return children;
     }
 
-    protected boolean includeChild(ASTNode child) {
-        return !isWhitespaceOrEmpty(child);
-    }
-
-    protected Block makeSubBlock(@NotNull ASTNode childNode) {
-        Indent indent = Indent.getNoneIndent();
-        Alignment alignment = Alignment.createAlignment();
-        Wrap wrap = Wrap.createWrap(WrapType.NONE, false);
-
-        return AntlrBlockFactory.createBlock(childNode, wrap, alignment, indent, this, mySettings);
-    }
 
     @Nullable
     @Override
@@ -74,15 +63,12 @@ public class AntlrBlock extends AbstractBlock {
         return myNode.getFirstChildNode() == null;
     }
 
-    private static boolean isWhitespaceOrEmpty(ASTNode node) {
-        return node.getElementType() == TokenType.WHITE_SPACE || node.getTextLength() == 0;
-    }
 
-    private AntlrCodeStyleSettings getCustomSettings() {
+    protected AntlrCodeStyleSettings getCustomSettings() {
         return mySettings.getCustomSettings(AntlrCodeStyleSettings.class);
     }
 
-    private CommonCodeStyleSettings getCommonSettings() {
+    protected CommonCodeStyleSettings getCommonSettings() {
         return mySettings.getCommonSettings(ANTLRv4Language.INSTANCE);
     }
 }
