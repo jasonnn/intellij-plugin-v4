@@ -8,3 +8,8 @@ D : [dD];
 E : [eE];
 F : [ f F ];
 G : [gG];
+
+
+a : A;
+bb : B             B;
+ccc : C  C C;
