@@ -6,6 +6,9 @@
 
 # downloaded libs/resources
 /lib/
+bild.log
+bilder.py
+bilder.pyc
 
 # Per-user settings
 # https://intellij-support.jetbrains.com/entries/23393067
