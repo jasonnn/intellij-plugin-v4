@@ -1,0 +1,64 @@
+package org.antlr.intellij.plugin.tokens; 
+
+import org.antlr.intellij.adaptor.lexer.TokenElementType;
+import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
+import org.antlr.intellij.plugin.parser.ANTLRv4Lexer;
+public class AntlrTokenTypes { 
+
+public static final TokenElementType TOKEN_REF = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.TOKEN_REF);
+public static final TokenElementType RULE_REF = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.RULE_REF);
+public static final TokenElementType LEXER_CHAR_SET = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.LEXER_CHAR_SET);
+public static final TokenElementType DOC_COMMENT = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.DOC_COMMENT);
+public static final TokenElementType BLOCK_COMMENT = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.BLOCK_COMMENT);
+public static final TokenElementType LINE_COMMENT = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.LINE_COMMENT);
+public static final TokenElementType BEGIN_ARG_ACTION = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.BEGIN_ARG_ACTION);
+public static final TokenElementType OPTIONS = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.OPTIONS);
+public static final TokenElementType TOKENS = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.TOKENS);
+public static final TokenElementType IMPORT = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.IMPORT);
+public static final TokenElementType FRAGMENT = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.FRAGMENT);
+public static final TokenElementType LEXER = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.LEXER);
+public static final TokenElementType PARSER = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.PARSER);
+public static final TokenElementType GRAMMAR = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.GRAMMAR);
+public static final TokenElementType PROTECTED = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.PROTECTED);
+public static final TokenElementType PUBLIC = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.PUBLIC);
+public static final TokenElementType PRIVATE = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.PRIVATE);
+public static final TokenElementType RETURNS = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.RETURNS);
+public static final TokenElementType LOCALS = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.LOCALS);
+public static final TokenElementType THROWS = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.THROWS);
+public static final TokenElementType CATCH = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.CATCH);
+public static final TokenElementType FINALLY = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.FINALLY);
+public static final TokenElementType MODE = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.MODE);
+public static final TokenElementType COLON = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.COLON);
+public static final TokenElementType COLONCOLON = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.COLONCOLON);
+public static final TokenElementType COMMA = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.COMMA);
+public static final TokenElementType SEMI = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.SEMI);
+public static final TokenElementType LPAREN = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.LPAREN);
+public static final TokenElementType RPAREN = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.RPAREN);
+public static final TokenElementType RARROW = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.RARROW);
+public static final TokenElementType LT = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.LT);
+public static final TokenElementType GT = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.GT);
+public static final TokenElementType ASSIGN = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.ASSIGN);
+public static final TokenElementType QUESTION = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.QUESTION);
+public static final TokenElementType STAR = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.STAR);
+public static final TokenElementType PLUS = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.PLUS);
+public static final TokenElementType PLUS_ASSIGN = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.PLUS_ASSIGN);
+public static final TokenElementType OR = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.OR);
+public static final TokenElementType DOLLAR = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.DOLLAR);
+public static final TokenElementType DOT = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.DOT);
+public static final TokenElementType RANGE = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.RANGE);
+public static final TokenElementType AT = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.AT);
+public static final TokenElementType POUND = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.POUND);
+public static final TokenElementType NOT = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.NOT);
+public static final TokenElementType RBRACE = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.RBRACE);
+public static final TokenElementType ID = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.ID);
+public static final TokenElementType INT = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.INT);
+public static final TokenElementType STRING_LITERAL = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.STRING_LITERAL);
+public static final TokenElementType UNTERMINATED_STRING_LITERAL = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.UNTERMINATED_STRING_LITERAL);
+public static final TokenElementType WS = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.WS);
+public static final TokenElementType ACTION = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.ACTION);
+public static final TokenElementType ERRCHAR = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.ERRCHAR);
+public static final TokenElementType ARG_ACTION = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.ARG_ACTION);
+public static final TokenElementType UNTERMINATED_ARG_ACTION = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.UNTERMINATED_ARG_ACTION);
+public static final TokenElementType UNTERMINATED_CHAR_SET = ANTLRv4TokenTypes.getTokenElementType(ANTLRv4Lexer.UNTERMINATED_CHAR_SET);
+
+}

@@ -1,0 +1,68 @@
+package org.antlr.intellij.plugin.tokens; 
+
+import org.antlr.intellij.adaptor.lexer.RuleElementType;
+import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
+import org.antlr.intellij.plugin.parser.ANTLRv4Parser;
+public class AntlrRuleTypes { 
+
+public static final RuleElementType grammarSpec = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_grammarSpec);
+public static final RuleElementType grammarType = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_grammarType);
+public static final RuleElementType prequelConstruct = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_prequelConstruct);
+public static final RuleElementType optionsSpec = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_optionsSpec);
+public static final RuleElementType option = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_option);
+public static final RuleElementType optionValue = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_optionValue);
+public static final RuleElementType delegateGrammars = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_delegateGrammars);
+public static final RuleElementType delegateGrammar = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_delegateGrammar);
+public static final RuleElementType tokensSpec = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_tokensSpec);
+public static final RuleElementType action = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_action);
+public static final RuleElementType actionScopeName = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_actionScopeName);
+public static final RuleElementType modeSpec = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_modeSpec);
+public static final RuleElementType rules = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_rules);
+public static final RuleElementType ruleSpec = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleSpec);
+public static final RuleElementType parserRuleSpec = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_parserRuleSpec);
+public static final RuleElementType exceptionGroup = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_exceptionGroup);
+public static final RuleElementType exceptionHandler = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_exceptionHandler);
+public static final RuleElementType finallyClause = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_finallyClause);
+public static final RuleElementType rulePrequel = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_rulePrequel);
+public static final RuleElementType ruleReturns = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleReturns);
+public static final RuleElementType throwsSpec = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_throwsSpec);
+public static final RuleElementType localsSpec = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_localsSpec);
+public static final RuleElementType ruleAction = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleAction);
+public static final RuleElementType ruleModifiers = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleModifiers);
+public static final RuleElementType ruleModifier = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleModifier);
+public static final RuleElementType ruleBlock = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleBlock);
+public static final RuleElementType ruleAltList = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleAltList);
+public static final RuleElementType labeledAlt = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_labeledAlt);
+public static final RuleElementType lexerRule = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerRule);
+public static final RuleElementType lexerRuleBlock = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerRuleBlock);
+public static final RuleElementType lexerAltList = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerAltList);
+public static final RuleElementType lexerAlt = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerAlt);
+public static final RuleElementType lexerElements = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerElements);
+public static final RuleElementType lexerElement = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerElement);
+public static final RuleElementType labeledLexerElement = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_labeledLexerElement);
+public static final RuleElementType lexerBlock = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerBlock);
+public static final RuleElementType lexerCommands = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerCommands);
+public static final RuleElementType lexerCommand = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerCommand);
+public static final RuleElementType lexerCommandName = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerCommandName);
+public static final RuleElementType lexerCommandExpr = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerCommandExpr);
+public static final RuleElementType altList = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_altList);
+public static final RuleElementType alternative = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_alternative);
+public static final RuleElementType element = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_element);
+public static final RuleElementType labeledElement = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_labeledElement);
+public static final RuleElementType ebnf = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ebnf);
+public static final RuleElementType blockSuffix = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_blockSuffix);
+public static final RuleElementType ebnfSuffix = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ebnfSuffix);
+public static final RuleElementType lexerAtom = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_lexerAtom);
+public static final RuleElementType atom = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_atom);
+public static final RuleElementType notSet = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_notSet);
+public static final RuleElementType blockSet = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_blockSet);
+public static final RuleElementType setElement = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_setElement);
+public static final RuleElementType block = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_block);
+public static final RuleElementType ruleref = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_ruleref);
+public static final RuleElementType range = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_range);
+public static final RuleElementType terminal = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_terminal);
+public static final RuleElementType elementOptions = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_elementOptions);
+public static final RuleElementType elementOption = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_elementOption);
+public static final RuleElementType id = ANTLRv4TokenTypes.getRuleElementType(ANTLRv4Parser.RULE_id);
+
+}
