@@ -30,13 +30,5 @@ public class ParserRuleSpecNode extends RuleSpecNode {
 		return rr;
 	}
 
-	public static class Factory implements PsiElementFactory {
-		public static Factory INSTANCE = new Factory();
-
-		@Override
-		public PsiElement createElement(ASTNode node) {
-			return new ParserRuleSpecNode(node);
-		}
-	}
 }
 

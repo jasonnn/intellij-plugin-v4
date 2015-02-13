@@ -30,12 +30,4 @@ public class LexerRuleSpecNode extends RuleSpecNode {
 		return tr;
 	}
 
-	public static class Factory implements PsiElementFactory {
-		public static Factory INSTANCE = new Factory();
-
-		@Override
-		public PsiElement createElement(ASTNode node) {
-			return new LexerRuleSpecNode(node);
-		}
-	}
 }
