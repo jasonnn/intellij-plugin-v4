@@ -1,6 +1,7 @@
 package org.antlr.intellij.plugin.folding;
 
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import org.antlr.intellij.plugin.ANTLRTestData;
 
 import java.io.File;
 
@@ -16,7 +17,7 @@ public class ANTLRv4FoldingBuilderTest extends LightPlatformCodeInsightFixtureTe
     }
 
     private void doTest(){
-        myFixture.testFoldingWithCollapseStatus(getTestDataPath() + "/" + getTestName(false) + ".folding.g4");
+        myFixture.testFoldingWithCollapseStatus(getTestDataPath()  + getTestName(false) + ".folding.g4");
     }
 
     @Override
@@ -26,8 +27,6 @@ public class ANTLRv4FoldingBuilderTest extends LightPlatformCodeInsightFixtureTe
 
     @Override
     protected String getTestDataPath() {
-        File f = new File("test/testData/grammars/folding/").getAbsoluteFile();
-        assertTrue(f.exists());
-        return f.getAbsolutePath();
+      return ANTLRTestData.getTestDataPath("grammars/folding");
     }
 }

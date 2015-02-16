@@ -28,6 +28,17 @@ import java.util.List;
 @SuppressWarnings("SimplifiableIfStatement")
 public class MyPsiUtils {
 
+	public static ASTNode getFirstChild(ASTNode parent,IElementType type){
+		for(ASTNode child = parent.getFirstChildNode();child!=null;child=child.getTreeNext()){
+			if(child.getElementType()==type) return child;
+		}
+		return null;
+	}
+	public static PsiElement getFirstChild(PsiElement parent,IElementType type){
+		ASTNode result = getFirstChild(parent.getNode(),type);
+		return result==null ? null : result.getPsi();
+	}
+
    public static Iterable<PsiElement> directChildren(final PsiElement parent){
         return new Iterable<PsiElement>() {
             @NotNull

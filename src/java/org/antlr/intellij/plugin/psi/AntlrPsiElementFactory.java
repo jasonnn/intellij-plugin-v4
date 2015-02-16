@@ -1,10 +1,10 @@
 package org.antlr.intellij.plugin.psi;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import org.antlr.intellij.adaptor.parser.PsiElementFactory;
+import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
 import org.antlr.intellij.plugin.tokens.AntlrRuleTypes;
 
 import java.util.HashMap;
@@ -21,8 +21,15 @@ public class AntlrPsiElementFactory {
 
     }
 
-    public static PsiElement doCreateElement(ASTNode node) {
-        return new ASTWrapperPsiElement(node);
+     static PsiElement doCreateElement(ASTNode node) {
+         final IElementType type = node.getElementType();
+
+         if(ANTLRv4TokenTypes.COMMENTS.contains(type)){
+             return new AntlrPsiElement(node);
+         }
+
+		 return new AntlrPsiElement(node);
+
     }
 
 

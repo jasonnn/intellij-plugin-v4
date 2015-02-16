@@ -43,7 +43,7 @@ public class ANTLRv4FormattingTest extends FormatterTestCase {
 
     @Override
     protected String getTestDataPath() {
-        return ANTLRTestData.PATH;
+        return ANTLRTestData.getTestDataPath("grammars");
     }
 
     @Override
