@@ -7,6 +7,7 @@ import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
@@ -20,7 +21,7 @@ import java.util.List;
 /**
  * Created by jason on 2/15/15.
  */
-public  class AntlrASTRuleContext extends ParserRuleContext implements ASTNode {
+public class AntlrASTRuleContext extends ParserRuleContext implements ASTNode {
 
 
     private final IElementType myType;
@@ -31,6 +32,11 @@ public  class AntlrASTRuleContext extends ParserRuleContext implements ASTNode {
 
     public AntlrASTRuleContext(IElementType myType) {
         this.myType = myType;
+    }
+
+    public AntlrASTRuleContext(ParserRuleContext parent, int invokingState) {
+        super(parent, invokingState);
+        myType = ANTLRv4TokenTypes.getRuleElementType(getRuleIndex());
     }
 
 
