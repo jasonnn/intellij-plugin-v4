@@ -1,29 +1,54 @@
-package org.antlr.intellij.plugin.psi;
+package org.antlr.intellij.plugin.adaptors.wip;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
-import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by jason on 2/23/15.
  */
-public class MyAntlrRuleContext extends ParserRuleContext implements ASTNode {
-    @SuppressWarnings("MagicConstant")
-    private final AntlrASTAdapter astDelegate = new AntlrASTAdapter(ANTLRv4TokenTypes.getRuleElementType(getRuleIndex()), this);
+public class MyErrorNode extends ErrorNodeImpl implements ASTNode {
+    final AntlrPsiAdapter astDelegate;
 
-    public MyAntlrRuleContext() {
+
+    public MyErrorNode(Token token) {
+        super(token);
+        astDelegate = new AntlrPsiAdapter(TokenType.ERROR_ELEMENT, this);
     }
 
-    public MyAntlrRuleContext(ParserRuleContext parent, int invokingStateNumber) {
-        super(parent, invokingStateNumber);
+
+    public <T> boolean replace(Key<T> key, T oldValue, T newValue) {
+        return astDelegate.replace(key, oldValue, newValue);
+    }
+
+    public void copyUserDataTo(UserDataHolderBase other) {
+        astDelegate.copyUserDataTo(other);
+    }
+
+    @NotNull
+    public <T> T putUserDataIfAbsent(Key<T> key, T value) {
+        return astDelegate.putUserDataIfAbsent(key, value);
+    }
+
+    public void copyCopyableDataTo(UserDataHolderBase clone) {
+        astDelegate.copyCopyableDataTo(clone);
+    }
+
+    public String getUserDataString() {
+        return astDelegate.getUserDataString();
+    }
+
+    public boolean isUserDataEmpty() {
+        return astDelegate.isUserDataEmpty();
     }
 
     @Override
@@ -178,25 +203,17 @@ public class MyAntlrRuleContext extends ParserRuleContext implements ASTNode {
 
     @Override
     public Object clone() {
-        throw new UnsupportedOperationException("TODO!!!");
-    }
-
-    public String getUserDataString() {
-        return astDelegate.getUserDataString();
-    }
-
-    public void copyUserDataTo(UserDataHolderBase other) {
-        astDelegate.copyUserDataTo(other);
+        return astDelegate.clone();
     }
 
     @Nullable
     @Override
-    public <T> T getUserData(@NotNull Key<T> key) {
+    public <T> T getUserData(Key<T> key) {
         return astDelegate.getUserData(key);
     }
 
     @Override
-    public <T> void putUserData(@NotNull Key<T> key, @Nullable T value) {
+    public <T> void putUserData(Key<T> key, T value) {
         astDelegate.putUserData(key, value);
     }
 
@@ -209,22 +226,5 @@ public class MyAntlrRuleContext extends ParserRuleContext implements ASTNode {
     @Override
     public <T> void putCopyableUserData(Key<T> key, T value) {
         astDelegate.putCopyableUserData(key, value);
-    }
-
-    public <T> boolean replace(@NotNull Key<T> key, @Nullable T oldValue, @Nullable T newValue) {
-        return astDelegate.replace(key, oldValue, newValue);
-    }
-
-    @NotNull
-    public <T> T putUserDataIfAbsent(@NotNull Key<T> key, @NotNull T value) {
-        return astDelegate.putUserDataIfAbsent(key, value);
-    }
-
-    public void copyCopyableDataTo(@NotNull UserDataHolderBase clone) {
-        astDelegate.copyCopyableDataTo(clone);
-    }
-
-    public boolean isUserDataEmpty() {
-        return astDelegate.isUserDataEmpty();
     }
 }

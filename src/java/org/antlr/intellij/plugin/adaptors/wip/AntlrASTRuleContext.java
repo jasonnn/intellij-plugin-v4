@@ -1,4 +1,4 @@
-package org.antlr.intellij.plugin.psi;
+package org.antlr.intellij.plugin.adaptors.wip;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Key;

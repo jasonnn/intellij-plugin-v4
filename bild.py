@@ -5,7 +5,6 @@
 # bootstrap by downloading bilder.py if not found
 import urllib
 import os
-import fileinput
 
 if not os.path.exists("bilder.py"):
     print "bootstrapping; downloading bilder.py"
@@ -43,7 +42,7 @@ def patch_parser():
     require(parsers)
 
     find = "extends ParserRuleContext"
-    replace_with = "extends org.antlr.intellij.plugin.psi.AntlrASTRuleContext"
+    replace_with = "extends org.antlr.intellij.plugin.adaptors.wip.AntlrASTRuleContext"
 
     src_file = "gen/org/antlr/intellij/plugin/parser/ANTLRv4Parser.java"
     patched_code = open(src_file).read().replace(find, replace_with)

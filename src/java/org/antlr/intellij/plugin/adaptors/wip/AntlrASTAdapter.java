@@ -1,4 +1,4 @@
-package org.antlr.intellij.plugin.psi;
+package org.antlr.intellij.plugin.adaptors.wip;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
@@ -14,9 +14,9 @@ import org.jetbrains.annotations.Nullable;
  * Created by jason on 2/23/15.
  */
 public class AntlrASTAdapter extends UserDataHolderBase implements ASTNode {
-    private final IElementType type;
-    private final ParseTree tree;
-    int siblingIndex = -1;
+    protected final IElementType type;
+    protected final ParseTree tree;
+    protected int siblingIndex = -1;
 
     public AntlrASTAdapter(IElementType myType, ParseTree tree) {
         this.type = myType;
