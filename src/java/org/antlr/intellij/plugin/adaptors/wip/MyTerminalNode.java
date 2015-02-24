@@ -5,10 +5,14 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import org.antlr.intellij.adaptor.lexer.ElementTypeFactory;
+import org.antlr.intellij.plugin.ANTLRv4Language;
 import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenSource;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,14 +20,18 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by jason on 2/23/15.
  */
-public class MyTerminalNode extends TerminalNodeImpl implements ASTNode {
-    @SuppressWarnings("MagicConstant")
+public class MyTerminalNode extends TerminalNodeImpl implements AntlrAST {
     private final AntlrPsiAdapter astDelegate;
 
 
     public MyTerminalNode(Token symbol) {
         super(symbol);
-        astDelegate = new AntlrPsiAdapter(ANTLRv4TokenTypes.getRuleElementType(symbol.getType()), this);
+        int type = symbol.getType();
+        IElementType elementType = type==Token.EOF
+                ? ElementTypeFactory.getEofElementType(ANTLRv4Language.INSTANCE)
+                :ANTLRv4TokenTypes.getTokenElementType(symbol.getType());
+
+        astDelegate = new AntlrPsiAdapter(elementType, this);
     }
 
     public boolean isUserDataEmpty() {

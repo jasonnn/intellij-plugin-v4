@@ -12,13 +12,17 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by jason on 2/23/15.
+ *
  */
-public class AntlrASTAdapter extends UserDataHolderBase implements ASTNode {
+    //I was getting excited about finally using an intersection type
+    //Unfortunately, it was not to be :(
+    //see https://bugs.eclipse.org/bugs/show_bug.cgi?id=314556
+public class AntlrASTAdapter/*<T extends ParseTree & ASTNode> */extends UserDataHolderBase implements ASTNode {
     protected final IElementType type;
-    protected final ParseTree tree;
+    protected final AntlrAST tree;
     protected int siblingIndex = -1;
 
-    public AntlrASTAdapter(IElementType myType, ParseTree tree) {
+    public AntlrASTAdapter(IElementType myType, AntlrAST tree) {
         this.type = myType;
         this.tree = tree;
     }
@@ -219,10 +223,10 @@ public class AntlrASTAdapter extends UserDataHolderBase implements ASTNode {
     public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
         throw new UnsupportedOperationException("todo!!");
     }
-
+    @NotNull
     @Override
-    public Object clone() {
-        throw new UnsupportedOperationException("todo!!");
-        // return super.clone();
+    public AntlrASTAdapter clone() {
+        //throw new UnsupportedOperationException("todo!!");
+         return (AntlrASTAdapter) super.clone();
     }
 }

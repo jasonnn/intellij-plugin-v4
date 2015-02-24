@@ -9,6 +9,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.IncorrectOperationException;
+import org.antlr.intellij.plugin.ANTLRv4Language;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +20,7 @@ import javax.swing.*;
  * Created by jason on 2/23/15.
  */
 public class AntlrPsiAdapter extends AntlrASTAdapter implements PsiElement {
-    public AntlrPsiAdapter(IElementType myType, ParseTree tree) {
+    public AntlrPsiAdapter(IElementType myType, AntlrAST tree) {
         super(myType, tree);
     }
 
@@ -30,31 +31,34 @@ public class AntlrPsiAdapter extends AntlrASTAdapter implements PsiElement {
 
     @Override
     public ASTNode getNode() {
-        return this;
+        return tree;
     }
 
 
     @NotNull
     @Override
     public Project getProject() throws PsiInvalidElementAccessException {
-        return null;
+        throw new UnsupportedOperationException("TODO");
+
     }
 
     @NotNull
     @Override
     public Language getLanguage() {
-        return null;
+        return ANTLRv4Language.INSTANCE;
     }
 
     @Override
     public PsiManager getManager() {
-        return null;
+        throw new UnsupportedOperationException("TODO");
+
     }
 
     @NotNull
     @Override
     public PsiElement[] getChildren() {
-        return new PsiElement[0];
+        throw new UnsupportedOperationException("TODO");
+
     }
 
     @Override
@@ -84,105 +88,109 @@ public class AntlrPsiAdapter extends AntlrASTAdapter implements PsiElement {
 
     @Override
     public PsiFile getContainingFile() throws PsiInvalidElementAccessException {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public int getStartOffsetInParent() {
-        return 0;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Nullable
     @Override
     public PsiElement findElementAt(int offset) {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Nullable
     @Override
     public PsiReference findReferenceAt(int offset) {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public int getTextOffset() {
-        return 0;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @NotNull
     @Override
     public char[] textToCharArray() {
-        return new char[0];
+        return getText().toCharArray();
     }
 
     @Override
     public PsiElement getNavigationElement() {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public PsiElement getOriginalElement() {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public boolean textMatches(@NotNull CharSequence text) {
-        return false;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public boolean textMatches(@NotNull PsiElement element) {
-        return false;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public void accept(@NotNull PsiElementVisitor visitor) {
+        throw new UnsupportedOperationException("TODO");
 
     }
 
     @Override
     public void acceptChildren(@NotNull PsiElementVisitor visitor) {
+        throw new UnsupportedOperationException("TODO");
 
     }
 
     @Override
     public PsiElement copy() {
-        return null;
+        throw new UnsupportedOperationException("TODO");
+
     }
 
     @Override
     public PsiElement add(@NotNull PsiElement element) throws IncorrectOperationException {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public PsiElement addBefore(@NotNull PsiElement element, @Nullable PsiElement anchor) throws IncorrectOperationException {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public PsiElement addAfter(@NotNull PsiElement element, @Nullable PsiElement anchor) throws IncorrectOperationException {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public void checkAdd(@NotNull PsiElement element) throws IncorrectOperationException {
+        throw new UnsupportedOperationException("TODO");
 
     }
 
     @Override
     public PsiElement addRange(PsiElement first, PsiElement last) throws IncorrectOperationException {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public PsiElement addRangeBefore(@NotNull PsiElement first, @NotNull PsiElement last, PsiElement anchor) throws IncorrectOperationException {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public PsiElement addRangeAfter(PsiElement first, PsiElement last, PsiElement anchor) throws IncorrectOperationException {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
@@ -192,39 +200,46 @@ public class AntlrPsiAdapter extends AntlrASTAdapter implements PsiElement {
 
     @Override
     public void checkDelete() throws IncorrectOperationException {
+        throw new UnsupportedOperationException("TODO");
 
     }
 
     @Override
     public void deleteChildRange(PsiElement first, PsiElement last) throws IncorrectOperationException {
+        throw new UnsupportedOperationException("TODO");
 
     }
 
     @Override
     public PsiElement replace(@NotNull PsiElement newElement) throws IncorrectOperationException {
-        return null;
+        throw new UnsupportedOperationException("TODO");
+
     }
 
     @Override
     public boolean isValid() {
-        return false;
+        throw new UnsupportedOperationException("TODO");
+
     }
 
     @Override
     public boolean isWritable() {
-        return false;
+        throw new UnsupportedOperationException("TODO");
+
     }
 
     @Nullable
     @Override
     public PsiReference getReference() {
-        return null;
+        throw new UnsupportedOperationException("TODO");
+
     }
 
     @NotNull
     @Override
     public PsiReference[] getReferences() {
-        return new PsiReference[0];
+        throw new UnsupportedOperationException("TODO");
+
     }
 
     @Override
@@ -235,34 +250,44 @@ public class AntlrPsiAdapter extends AntlrASTAdapter implements PsiElement {
     @Nullable
     @Override
     public PsiElement getContext() {
-        return null;
+        throw new UnsupportedOperationException("TODO");
+
     }
 
     @Override
     public boolean isPhysical() {
-        return false;
+        throw new UnsupportedOperationException("TODO");
+
     }
 
     @NotNull
     @Override
     public GlobalSearchScope getResolveScope() {
-        return null;
+        throw new UnsupportedOperationException("TODO");
+
     }
 
     @NotNull
     @Override
     public SearchScope getUseScope() {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
 
     @Override
     public boolean isEquivalentTo(PsiElement another) {
-        return false;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public Icon getIcon(int flags) {
         return null;
+    }
+
+    @NotNull
+    @Override
+    public AntlrPsiAdapter clone() {
+        //throw new UnsupportedOperationException("todo!!");
+         return (AntlrPsiAdapter) super.clone();
     }
 }

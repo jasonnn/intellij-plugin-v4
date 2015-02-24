@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by jason on 2/23/15.
  */
-public class MyErrorNode extends ErrorNodeImpl implements ASTNode {
+public class MyErrorNode extends ErrorNodeImpl implements AntlrAST {
     final AntlrPsiAdapter astDelegate;
 
 

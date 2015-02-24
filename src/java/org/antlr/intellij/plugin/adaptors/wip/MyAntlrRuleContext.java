@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by jason on 2/23/15.
  */
-public class MyAntlrRuleContext extends ParserRuleContext implements ASTNode {
+public class MyAntlrRuleContext extends ParserRuleContext implements AntlrAST {
     @SuppressWarnings("MagicConstant")
     private final AntlrPsiAdapter astDelegate = new AntlrPsiAdapter(ANTLRv4TokenTypes.getRuleElementType(getRuleIndex()), this);
 
