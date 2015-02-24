@@ -39,7 +39,7 @@ public class AntlrASTRuleContext extends ParserRuleContext implements ASTNode {
         myType = ANTLRv4TokenTypes.getRuleElementType(getRuleIndex());
     }
 
-
+    /*--------------UserDataHolder methods--------------*/
     protected UserDataHolderBase dataHolder() {
         UserDataHolderBase dataHolderBase = dataHolderDelegate;
         if (dataHolderBase == null) {
@@ -67,6 +67,35 @@ public class AntlrASTRuleContext extends ParserRuleContext implements ASTNode {
         dataHolder().putUserData(key, value);
     }
 
+    @Nullable
+    @Override
+    public <T> T getCopyableUserData(Key<T> key) {
+        return dataHolder().getCopyableUserData(key);
+    }
+
+    @Override
+    public <T> void putCopyableUserData(Key<T> key, T value) {
+        dataHolder().putCopyableUserData(key, value);
+    }
+
+    public <T> boolean replace(@NotNull Key<T> key, @Nullable T oldValue, @Nullable T newValue) {
+        return dataHolder().replace(key, oldValue, newValue);
+    }
+
+    @NotNull
+    public <T> T putUserDataIfAbsent(@NotNull Key<T> key, @NotNull T value) {
+        return dataHolder().putUserDataIfAbsent(key, value);
+    }
+
+    public void copyCopyableDataTo(@NotNull UserDataHolderBase clone) {
+        dataHolder().copyCopyableDataTo(clone);
+    }
+
+    public boolean isUserDataEmpty() {
+        return dataHolder().isUserDataEmpty();
+    }
+
+    /*--------------ASTNode methods-----------------*/
     @Override
     public IElementType getElementType() {
         return myType;
@@ -80,7 +109,11 @@ public class AntlrASTRuleContext extends ParserRuleContext implements ASTNode {
     @Override
     public boolean textContains(char c) {
 
-        return ASTNodeHelper.textContains(this, c);
+        CharSequence chars = getChars();
+        for (int i = 0; i < chars.length(); i++) {
+            if (chars.charAt(i) == c) return true;
+        }
+        return false;
     }
 
     @Override
@@ -90,12 +123,12 @@ public class AntlrASTRuleContext extends ParserRuleContext implements ASTNode {
 
     @Override
     public int getTextLength() {
-        return ASTNodeHelper.getTextLength(this);
+        return getChars().length();
     }
 
     @Override
     public TextRange getTextRange() {
-        return ASTNodeHelper.getTextRange(this);
+        return TextRange.from(getStartOffset(), getTextLength());
     }
 
     @Override
@@ -205,16 +238,7 @@ public class AntlrASTRuleContext extends ParserRuleContext implements ASTNode {
         throw new UnsupportedOperationException("todo!");
     }
 
-    @Nullable
-    @Override
-    public <T> T getCopyableUserData(Key<T> key) {
-        return dataHolderDelegate.getCopyableUserData(key);
-    }
 
-    @Override
-    public <T> void putCopyableUserData(Key<T> key, T value) {
-        dataHolderDelegate.putCopyableUserData(key, value);
-    }
 
     @Nullable
     @Override
@@ -252,23 +276,6 @@ public class AntlrASTRuleContext extends ParserRuleContext implements ASTNode {
     @Override
     public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
         return null;
-    }
-
-    public <T> boolean replace(@NotNull Key<T> key, @Nullable T oldValue, @Nullable T newValue) {
-        return dataHolder().replace(key, oldValue, newValue);
-    }
-
-    @NotNull
-    public <T> T putUserDataIfAbsent(@NotNull Key<T> key, @NotNull T value) {
-        return dataHolder().putUserDataIfAbsent(key, value);
-    }
-
-    public void copyCopyableDataTo(@NotNull UserDataHolderBase clone) {
-        dataHolder().copyCopyableDataTo(clone);
-    }
-
-    public boolean isUserDataEmpty() {
-        return dataHolder().isUserDataEmpty();
     }
 
 
