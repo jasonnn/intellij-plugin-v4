@@ -5,43 +5,25 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.openapi.util.UserDataHolderBase;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Created by jason on 2/23/15.
+ * Created by jason on 2/24/15.
+ *
+ * This uses the classic copy-and-paste design pattern originally proposed
+ * by the so-called gang of four in their seminal work,
+ * "Design Patterns: Elements of Reusable Object-Oriented Software"
+ * At least, I think so.
  */
-public class MyErrorNode extends ErrorNodeImpl implements AntlrAST {
-   // final AntlrPsiAdapter astDelegate;
+public abstract class CopyAndPasteMeToImplementASTNode implements AntlrAST {
 
-
-    public MyErrorNode(Token token) {
-        super(token);
-        this.elementType= ANTLRv4TokenTypes.getTokenElementType(token.getType());
-       // astDelegate = new AntlrPsiAdapter(TokenType.ERROR_ELEMENT, this);
-    }
     IElementType elementType;
 
-    int siblingIndex=-1;
+    int siblingIndex = -1;
     private final UserDataHolder dataHolder = new UserDataHolderBase();
-
-
-    @Override
-    public PsiElement getPsi() {
-        throw new UnsupportedOperationException("todo");
-    }
-
-    @Override
-    public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
-        throw new UnsupportedOperationException("todo");
-    }
 
     @Override
     @Nullable
@@ -58,7 +40,7 @@ public class MyErrorNode extends ErrorNodeImpl implements AntlrAST {
     public int getSiblingIndex() {
         int index = siblingIndex;
         if (index == -1) {
-            index= AntlrASTSupport.getSiblingIndex(this);
+            index = AntlrASTSupport.getSiblingIndex(this);
             assert index != -1;
             siblingIndex = index;
         }
@@ -132,7 +114,7 @@ public class MyErrorNode extends ErrorNodeImpl implements AntlrAST {
 
     @Override
     public ASTNode[] getChildren(@Nullable TokenSet filter) {
-        return AntlrASTSupport.getChildren(this,filter);
+        return AntlrASTSupport.getChildren(this, filter);
     }
 
     @Override
@@ -142,37 +124,37 @@ public class MyErrorNode extends ErrorNodeImpl implements AntlrAST {
 
     @Override
     public void addChild(@NotNull ASTNode child, @Nullable ASTNode anchorBefore) {
-        AntlrASTSupport.addChild(this,child,anchorBefore);
+        AntlrASTSupport.addChild(this, child, anchorBefore);
     }
 
     @Override
     public void addLeaf(@NotNull IElementType leafType, CharSequence leafText, @Nullable ASTNode anchorBefore) {
-        AntlrASTSupport.addLeaf(this,leafType,leafText,anchorBefore);
+        AntlrASTSupport.addLeaf(this, leafType, leafText, anchorBefore);
     }
 
     @Override
     public void removeChild(@NotNull ASTNode child) {
-        AntlrASTSupport.removeChild(this,child);
+        AntlrASTSupport.removeChild(this, child);
     }
 
     @Override
     public void removeRange(@NotNull ASTNode firstNodeToRemove, ASTNode firstNodeToKeep) {
-        AntlrASTSupport.removeRange(this,firstNodeToRemove,firstNodeToKeep);
+        AntlrASTSupport.removeRange(this, firstNodeToRemove, firstNodeToKeep);
     }
 
     @Override
     public void replaceChild(@NotNull ASTNode oldChild, @NotNull ASTNode newChild) {
-        AntlrASTSupport.replaceChild(this,oldChild,newChild);
+        AntlrASTSupport.replaceChild(this, oldChild, newChild);
     }
 
     @Override
     public void replaceAllChildrenToChildrenOf(ASTNode anotherParent) {
-        AntlrASTSupport.replaceAllChildrenToChildrenOf(this,anotherParent);
+        AntlrASTSupport.replaceAllChildrenToChildrenOf(this, anotherParent);
     }
 
     @Override
     public void addChildren(ASTNode firstChild, ASTNode firstChildToNotAdd, ASTNode anchorBefore) {
-        AntlrASTSupport.addChildren(this,firstChild,firstChildToNotAdd,anchorBefore);
+        AntlrASTSupport.addChildren(this, firstChild, firstChildToNotAdd, anchorBefore);
     }
 
     @Override
@@ -206,24 +188,26 @@ public class MyErrorNode extends ErrorNodeImpl implements AntlrAST {
     @Nullable
     @Override
     public ASTNode findChildByType(IElementType type, @Nullable ASTNode anchor) {
-        return AntlrASTSupport.findChildByType(this,type,anchor);
+        return AntlrASTSupport.findChildByType(this, type, anchor);
     }
 
     @Nullable
     @Override
     public ASTNode findChildByType(@NotNull TokenSet typesSet) {
-        return AntlrASTSupport.findChildByType(this,typesSet);
+        return AntlrASTSupport.findChildByType(this, typesSet);
     }
 
     @Nullable
     @Override
     public ASTNode findChildByType(@NotNull TokenSet typesSet, @Nullable ASTNode anchor) {
-        return AntlrASTSupport.findChildByType(this,typesSet,anchor);
+        return AntlrASTSupport.findChildByType(this, typesSet, anchor);
     }
 
 
     @Override
-    public Object clone()  {
+    public Object clone() {
         return AntlrASTSupport.handleClone(this);
     }
+
+
 }
