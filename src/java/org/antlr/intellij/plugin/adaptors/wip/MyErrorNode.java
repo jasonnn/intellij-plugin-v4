@@ -6,7 +6,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
@@ -19,13 +18,11 @@ import org.jetbrains.annotations.Nullable;
  * Created by jason on 2/23/15.
  */
 public class MyErrorNode extends ErrorNodeImpl implements AntlrAST {
-   // final AntlrPsiAdapter astDelegate;
 
 
     public MyErrorNode(Token token) {
         super(token);
         this.elementType= ANTLRv4TokenTypes.getTokenElementType(token.getType());
-       // astDelegate = new AntlrPsiAdapter(TokenType.ERROR_ELEMENT, this);
     }
     IElementType elementType;
 
@@ -33,16 +30,22 @@ public class MyErrorNode extends ErrorNodeImpl implements AntlrAST {
     private final UserDataHolder dataHolder = new UserDataHolderBase();
 
 
+    PsiElement wrapper = null;
+
     @Override
     public PsiElement getPsi() {
-        throw new UnsupportedOperationException("todo");
+        //TODO double checked locking
+        PsiElement psi = wrapper;
+        if (psi == null) {
+            psi = wrapper = AntlrASTSupport.getPsi(this);
+        }
+        return psi;
     }
 
     @Override
     public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
-        throw new UnsupportedOperationException("todo");
+        return clazz.cast(getPsi());
     }
-
     @Override
     @Nullable
     public <T> T getUserData(@NotNull Key<T> key) {

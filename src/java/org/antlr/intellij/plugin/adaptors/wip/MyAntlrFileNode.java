@@ -1,29 +1,45 @@
 package org.antlr.intellij.plugin.adaptors.wip;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.FileASTNode;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.source.tree.FileElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.CharTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by jason on 2/24/15.
- *
- * This uses the classic copy-and-paste design pattern originally proposed
- * by the so-called gang of four in their seminal work,
- * "Design Patterns: Elements of Reusable Object-Oriented Software"
- * At least, I think so.
  */
-public abstract class CopyAndPasteMeToImplementASTNode implements AntlrAST {
+public class MyAntlrFileNode implements FileASTNode {
+
+    public MyAntlrFileNode(AntlrAST grammarRoot, IElementType elementType) {
+        this.grammarRoot = grammarRoot;
+        this.elementType = elementType;
+    }
+
+    @NotNull
+    @Override
+    public CharTable getCharTable() {
+        //TODO
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isParsed() {
+       throw new UnsupportedOperationException();
+    }
+
+     AntlrAST grammarRoot;
 
     IElementType elementType;
 
-    int siblingIndex = -1;
     private final UserDataHolder dataHolder = new UserDataHolderBase();
 
     @Override
@@ -37,21 +53,22 @@ public abstract class CopyAndPasteMeToImplementASTNode implements AntlrAST {
         dataHolder.putUserData(key, value);
     }
 
-    @Override
-    public int getSiblingIndex() {
-       return AntlrASTSupport.getSiblingIndexCached(this);
-    }
 
     PsiElement wrapper = null;
 
     @Override
     public PsiElement getPsi() {
-       return AntlrASTSupport.getPsiCached(this);
+        //TODO double checked locking
+        PsiElement psi = wrapper;
+        if (psi == null) {
+            psi = wrapper = AntlrASTSupport.getPsi(this);
+        }
+        return psi;
     }
 
     @Override
     public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
-        return AntlrASTSupport.getPsiCached(this, clazz);
+        return clazz.cast(getPsi());
     }
 
     @Override
@@ -60,109 +77,115 @@ public abstract class CopyAndPasteMeToImplementASTNode implements AntlrAST {
     }
 
     @Override
+    public String getText() {
+        return grammarRoot.getText();
+    }
+
+    @Override
     public CharSequence getChars() {
-        return AntlrASTSupport.getChars(this);
+        return grammarRoot.getChars();
     }
 
     @Override
     public boolean textContains(char c) {
-        return AntlrASTSupport.textContains(this, c);
+       return grammarRoot.textContains(c);
     }
 
     @Override
     public int getStartOffset() {
-        return AntlrASTSupport.getStartOffset(this);
+        return 0;
     }
 
     @Override
     public int getTextLength() {
-        return AntlrASTSupport.getTextLength(this);
+        return grammarRoot.getTextLength();
     }
 
     @Override
     public TextRange getTextRange() {
-        return AntlrASTSupport.getTextRange(this);
+        return grammarRoot.getTextRange();
     }
 
     @Override
     public ASTNode getTreeParent() {
-        return AntlrASTSupport.getTreeParent(this);
+        return null;
     }
 
     @Override
     public ASTNode getFirstChildNode() {
-        return AntlrASTSupport.getFirstChildNode(this);
+        return grammarRoot;
     }
 
     @Override
     public ASTNode getLastChildNode() {
-        return AntlrASTSupport.getLastChildNode(this);
+        return grammarRoot;
     }
 
     @Override
     public ASTNode getTreeNext() {
-        return AntlrASTSupport.getTreeNext(this);
+        return null;
     }
 
     @Override
     public ASTNode getTreePrev() {
-        return AntlrASTSupport.getTreePrev(this);
+       return null;
     }
 
     @Override
     public ASTNode[] getChildren(@Nullable TokenSet filter) {
-        return AntlrASTSupport.getChildren(this, filter);
+        //TODO
+        return new ASTNode[]{grammarRoot};
     }
 
     @Override
     public void addChild(@NotNull ASTNode child) {
-        AntlrASTSupport.addChild(this, child);
+        this.grammarRoot= (AntlrAST) child;
     }
 
     @Override
     public void addChild(@NotNull ASTNode child, @Nullable ASTNode anchorBefore) {
-        AntlrASTSupport.addChild(this, child, anchorBefore);
+        addChild(child);
     }
 
     @Override
     public void addLeaf(@NotNull IElementType leafType, CharSequence leafText, @Nullable ASTNode anchorBefore) {
-        AntlrASTSupport.addLeaf(this, leafType, leafText, anchorBefore);
+       throw new UnsupportedOperationException("should not contain leafs");
     }
 
     @Override
     public void removeChild(@NotNull ASTNode child) {
-        AntlrASTSupport.removeChild(this, child);
+       throw new UnsupportedOperationException();
     }
 
     @Override
     public void removeRange(@NotNull ASTNode firstNodeToRemove, ASTNode firstNodeToKeep) {
-        AntlrASTSupport.removeRange(this, firstNodeToRemove, firstNodeToKeep);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void replaceChild(@NotNull ASTNode oldChild, @NotNull ASTNode newChild) {
-        AntlrASTSupport.replaceChild(this, oldChild, newChild);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void replaceAllChildrenToChildrenOf(ASTNode anotherParent) {
-        AntlrASTSupport.replaceAllChildrenToChildrenOf(this, anotherParent);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void addChildren(ASTNode firstChild, ASTNode firstChildToNotAdd, ASTNode anchorBefore) {
-        AntlrASTSupport.addChildren(this, firstChild, firstChildToNotAdd, anchorBefore);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ASTNode copyElement() {
-        return AntlrASTSupport.copyElement(this);
+        throw new UnsupportedOperationException("TODO!!!");
     }
 
     @Nullable
     @Override
     public ASTNode findLeafElementAt(int offset) {
-        return AntlrASTSupport.findLeafElementAt(this, offset);
+        throw new UnsupportedOperationException();
     }
 
     @Nullable
@@ -179,32 +202,31 @@ public abstract class CopyAndPasteMeToImplementASTNode implements AntlrAST {
     @Nullable
     @Override
     public ASTNode findChildByType(IElementType type) {
-        return AntlrASTSupport.findChildByType(this, type);
+        //TODO
+        return grammarRoot;
     }
 
     @Nullable
     @Override
     public ASTNode findChildByType(IElementType type, @Nullable ASTNode anchor) {
-        return AntlrASTSupport.findChildByType(this, type, anchor);
+        return grammarRoot;
     }
 
     @Nullable
     @Override
     public ASTNode findChildByType(@NotNull TokenSet typesSet) {
-        return AntlrASTSupport.findChildByType(this, typesSet);
+        return grammarRoot;
     }
 
     @Nullable
     @Override
     public ASTNode findChildByType(@NotNull TokenSet typesSet, @Nullable ASTNode anchor) {
-        return AntlrASTSupport.findChildByType(this, typesSet, anchor);
+        return grammarRoot;
     }
 
 
     @Override
     public Object clone() {
-        return AntlrASTSupport.handleClone(this);
+       throw new UnsupportedOperationException("TODO");
     }
-
-
 }

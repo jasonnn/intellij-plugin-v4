@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import org.antlr.intellij.adaptor.parser.PsiElementFactory;
 import org.jetbrains.annotations.NotNull;
 
-public class AtAction extends ASTWrapperPsiElement {
+public class AtAction extends AntlrPsiElement {
 	public AtAction(@NotNull ASTNode node) {
 		super(node);
 	}

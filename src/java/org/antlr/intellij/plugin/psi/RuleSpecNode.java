@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 /** Root of lexer, parser rule defs */
-public abstract class RuleSpecNode extends ASTWrapperPsiElement implements PsiNamedElement {
+public abstract class RuleSpecNode extends AntlrPsiElement implements PsiNamedElement {
 	protected String name = null; // an override to input text ID
 
 	public RuleSpecNode(@NotNull final ASTNode node) {

@@ -1,9 +1,13 @@
 package org.antlr.intellij.plugin.adaptors.wip;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.Language;
+import com.intellij.lang.LanguageParserDefinitions;
+import com.intellij.lang.ParserDefinition;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UserDataHolder;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.antlr.v4.runtime.misc.Interval;
@@ -143,6 +147,18 @@ public class AntlrASTSupport {
         throw new UnsupportedOperationException("todo!!");
     }
 
+    private static Key<Integer> kSiblingIndex = Key.create("Antlr.siblingIndex");
+
+    public static int getSiblingIndexCached(ParseTree tree) {
+        UserDataHolder dataHolder = (UserDataHolder) tree;
+        Integer value = dataHolder.getUserData(kSiblingIndex);
+        if (value == null) {
+            value = getSiblingIndex(tree);
+            dataHolder.putUserData(kSiblingIndex, value);
+        }
+        return value;
+    }
+
     public static int getSiblingIndex(ParseTree tree) {
         int index = -1;
         ParseTree parent = tree.getParent();
@@ -158,5 +174,34 @@ public class AntlrASTSupport {
             }
         }
         return index;
+    }
+
+    private static final Key<PsiElement> kPsi = Key.create("Antlr.psi");
+
+    public static PsiElement getPsiCached(ASTNode node) {
+        PsiElement element = node.getUserData(kPsi);
+        if (element == null) {
+            element = getPsi(node);
+            node.putUserData(kPsi, element);
+        }
+        return element;
+    }
+
+    public static PsiElement getPsi(ASTNode node) {
+        final Language lang = node.getElementType().getLanguage();
+        final ParserDefinition parserDefinition = LanguageParserDefinitions.INSTANCE.forLanguage(lang);
+        if (parserDefinition != null) {
+            return parserDefinition.createElement(node);
+        }
+        //noinspection ConstantConditions
+        return null;
+    }
+
+    public static <T extends PsiElement> T getPsiCached(ASTNode node, Class<T> clazz) {
+        return clazz.cast(getPsiCached(node));
+    }
+
+    public static <T extends PsiElement> T getPsi(ASTNode node, Class<T> clazz) {
+        return clazz.cast(getPsi(node));
     }
 }

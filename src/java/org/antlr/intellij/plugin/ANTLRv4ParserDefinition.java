@@ -13,6 +13,7 @@ import com.intellij.psi.tree.TokenSet;
 import org.antlr.intellij.plugin.adaptors.ANTLRv4LexerAdaptor;
 import org.antlr.intellij.plugin.adaptors.wip.MyPsiParser;
 import org.antlr.intellij.plugin.parser.ANTLRv4Lexer;
+import org.antlr.intellij.plugin.psi.AntlrPsiFactory;
 import org.jetbrains.annotations.NotNull;
 
 /** The general interface between IDEA and ANTLR. */
@@ -68,6 +69,7 @@ public class ANTLRv4ParserDefinition implements ParserDefinition {
 	 */
 	@NotNull
 	public PsiElement createElement(ASTNode node) {
-		return ANTLRv4ASTFactory.createInternalParseTreeNode(node);
+		return AntlrPsiFactory.createElement(node);
+		//return ANTLRv4ASTFactory.createInternalParseTreeNode(node);
 	}
 }

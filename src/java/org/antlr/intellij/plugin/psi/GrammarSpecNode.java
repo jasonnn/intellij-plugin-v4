@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import org.antlr.intellij.adaptor.parser.PsiElementFactory;
 import org.jetbrains.annotations.NotNull;
 
-public class GrammarSpecNode extends ASTWrapperPsiElement {
+public class GrammarSpecNode extends AntlrPsiElement {
 	public GrammarSpecNode(@NotNull ASTNode node) {
 		super(node);
 	}

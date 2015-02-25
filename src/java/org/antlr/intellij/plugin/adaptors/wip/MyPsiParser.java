@@ -1,8 +1,10 @@
 package org.antlr.intellij.plugin.adaptors.wip;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.FileASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
+import com.intellij.psi.impl.source.tree.FileElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import org.antlr.intellij.adaptor.lexer.PsiTokenSource;
@@ -36,17 +38,30 @@ public class MyPsiParser implements PsiParser {
         } else {
             startRule = Token.INVALID_TYPE;
         }
-
-        switch (startRule) {
-            case ANTLRv4Parser.RULE_grammarSpec:
-                return parser.grammarSpec();
-
-            case ANTLRv4Parser.RULE_atom:
-                return parser.atom();
-
-            default:
-                String ruleName = ANTLRv4Parser.ruleNames[startRule];
-                throw new UnsupportedOperationException(String.format("cannot start parsing using root element %s", root));
+        ASTNode result = doParse(builder, startRule);
+        if (root instanceof IFileElementType) {
+            result = new MyAntlrFileNode((AntlrAST) result, root);
         }
+        return result;
+
+
+    }
+
+    static AntlrAST doParse(PsiBuilder psiBuilder, int startRule) {
+        TokenStream tokenStream = new CommonTokenStream(new PsiTokenSource(psiBuilder));
+        ANTLRv4Parser parser = new ANTLRv4Parser(tokenStream);
+        parser.removeErrorListeners();
+        parser.addErrorListener(new SyntaxErrorListener());
+
+        if (startRule == ANTLRv4Parser.RULE_grammarSpec) {
+            return parser.grammarSpec();
+        }
+        if (startRule == ANTLRv4Parser.RULE_atom) {
+            return parser.atom();
+        }
+
+        String ruleName = ANTLRv4Parser.ruleNames[startRule];
+        throw new UnsupportedOperationException(String.format("cannot start parsing using rule  %s", ruleName));
+
     }
 }

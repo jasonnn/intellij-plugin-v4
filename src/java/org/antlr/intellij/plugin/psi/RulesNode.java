@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import org.antlr.intellij.adaptor.parser.PsiElementFactory;
 import org.jetbrains.annotations.NotNull;
 
-public class RulesNode extends ASTWrapperPsiElement {
+public class RulesNode extends AntlrPsiElement {
 	public RulesNode(@NotNull ASTNode node) {
 		super(node);
 	}

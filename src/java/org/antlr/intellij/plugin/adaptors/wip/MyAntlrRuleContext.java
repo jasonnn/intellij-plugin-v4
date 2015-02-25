@@ -30,7 +30,7 @@ public class MyAntlrRuleContext extends ParserRuleContext implements AntlrAST {
         //noinspection MagicConstant
         this.elementType = ANTLRv4TokenTypes.getRuleElementType(getRuleIndex());
     }
-
+    /* ---- DO NOT DELETE THE FOLLOWING 4 METHODS ---- */
     public TerminalNode addChild(Token matchedToken) {
         TerminalNodeImpl t = new MyTerminalNode(matchedToken);
         addChild(t);
@@ -62,14 +62,21 @@ public class MyAntlrRuleContext extends ParserRuleContext implements AntlrAST {
     int siblingIndex = -1;
     private final UserDataHolder dataHolder = new UserDataHolderBase();
 
+    PsiElement wrapper = null;
+
     @Override
     public PsiElement getPsi() {
-        throw new UnsupportedOperationException("todo");
+        //TODO double checked locking
+        PsiElement psi = wrapper;
+        if (psi == null) {
+            psi = wrapper = AntlrASTSupport.getPsi(this);
+        }
+        return psi;
     }
 
     @Override
     public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
-        throw new UnsupportedOperationException("todo");
+        return clazz.cast(getPsi());
     }
 
 
