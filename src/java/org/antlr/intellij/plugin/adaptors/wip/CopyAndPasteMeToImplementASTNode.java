@@ -6,6 +6,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLock;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
@@ -14,16 +15,69 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by jason on 2/24/15.
  *
- * This uses the classic copy-and-paste design pattern originally proposed
- * by the so-called gang of four in their seminal work,
- * "Design Patterns: Elements of Reusable Object-Oriented Software"
- * At least, I think so.
+ * Copy-and-paste mixin template for antlr nodes that want to implement ASTNode
  */
 public abstract class CopyAndPasteMeToImplementASTNode implements AntlrAST {
 
-    IElementType elementType;
+    public static abstract class SimpleSpecializations extends CopyAndPasteMeToImplementASTNode {
+        int siblingIndex = -1;
 
-    int siblingIndex = -1;
+        PsiElement psiElement = null;
+
+        @Override
+        public PsiElement getPsi() {
+            PsiElement element = psiElement;
+            if (element != null) return element;
+
+            synchronized (PsiLock.LOCK) {
+                element = psiElement;
+                if (element != null) return element;
+
+                element = AntlrASTSupport.getPsi(this);
+                psiElement = element;
+                return element;
+            }
+        }
+
+        @Override
+        public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
+            return clazz.cast(getPsi());
+        }
+
+        @Override
+        public int getSiblingIndex() {
+            int index = siblingIndex;
+            if (index != -1) return index;
+
+            synchronized (PsiLock.LOCK) {
+                index = siblingIndex;
+                if (index != -1) return index;
+
+                index = AntlrASTSupport.getSiblingIndex(this);
+                siblingIndex = index;
+                return index;
+            }
+        }
+    }
+
+
+    @Override
+    public PsiElement getPsi() {
+        return AntlrASTSupport.getPsiCached(this);
+    }
+
+    @Override
+    public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
+        return AntlrASTSupport.getPsiCached(this, clazz);
+    }
+
+    @Override
+    public int getSiblingIndex() {
+        return AntlrASTSupport.getSiblingIndexCached(this);
+    }
+
+
+    IElementType elementType;
     private final UserDataHolder dataHolder = new UserDataHolderBase();
 
     @Override
@@ -35,23 +89,6 @@ public abstract class CopyAndPasteMeToImplementASTNode implements AntlrAST {
     @Override
     public <T> void putUserData(@NotNull Key<T> key, T value) {
         dataHolder.putUserData(key, value);
-    }
-
-    @Override
-    public int getSiblingIndex() {
-       return AntlrASTSupport.getSiblingIndexCached(this);
-    }
-
-    PsiElement wrapper = null;
-
-    @Override
-    public PsiElement getPsi() {
-       return AntlrASTSupport.getPsiCached(this);
-    }
-
-    @Override
-    public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
-        return AntlrASTSupport.getPsiCached(this, clazz);
     }
 
     @Override

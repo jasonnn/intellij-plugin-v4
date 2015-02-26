@@ -11,6 +11,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.antlr.intellij.plugin.adaptors.ANTLRv4LexerAdaptor;
+import org.antlr.intellij.plugin.adaptors.wip.MyAntlrPsiFile;
 import org.antlr.intellij.plugin.adaptors.wip.MyPsiParser;
 import org.antlr.intellij.plugin.parser.ANTLRv4Lexer;
 import org.antlr.intellij.plugin.psi.AntlrPsiFactory;
@@ -56,7 +57,8 @@ public class ANTLRv4ParserDefinition implements ParserDefinition {
 
 	@Override
 	public PsiFile createFile(FileViewProvider viewProvider) {
-		return new ANTLRv4FileRoot(viewProvider);
+		return new MyAntlrPsiFile(viewProvider);
+		//return new ANTLRv4FileRoot(viewProvider);
 	}
 
 	public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {

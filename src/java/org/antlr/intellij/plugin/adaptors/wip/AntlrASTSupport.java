@@ -17,6 +17,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
  * Created by jason on 2/24/15.
  */
 public class AntlrASTSupport {
+    //TODO: see if theres any overlap with com.intellij.psi.impl.source.tree.SharedImplUtil
+
     public static CharSequence getChars(ParseTree tree) {
         return tree.getText();
     }
@@ -47,18 +49,18 @@ public class AntlrASTSupport {
         return (ASTNode) tree.getParent();
     }
 
-    public static ASTNode getFirstChildNode(MyParseTree tree) {
+    public static ASTNode getFirstChildNode(SiblingIndexParseTree tree) {
         ParseTree child = tree.getChildCount() > 0 ? tree.getChild(0) : null;
         return (ASTNode) child;
     }
 
-    public static ASTNode getLastChildNode(MyParseTree tree) {
+    public static ASTNode getLastChildNode(SiblingIndexParseTree tree) {
         int childCount = tree.getChildCount();
         ParseTree child = childCount > 0 ? tree.getChild(childCount - 1) : null;
         return (ASTNode) child;
     }
 
-    public static ASTNode getTreeNext(MyParseTree tree) {
+    public static ASTNode getTreeNext(SiblingIndexParseTree tree) {
         ParseTree parent = tree.getParent();
         if (parent == null) return null;
         int nextIndex = tree.getSiblingIndex() + 1;
@@ -66,7 +68,7 @@ public class AntlrASTSupport {
         return (ASTNode) parent.getChild(nextIndex);
     }
 
-    public static ASTNode getTreePrev(MyParseTree tree) {
+    public static ASTNode getTreePrev(SiblingIndexParseTree tree) {
         ParseTree parent = tree.getParent();
         if (parent == null) return null;
         int nextIndex = tree.getSiblingIndex() - 1;
