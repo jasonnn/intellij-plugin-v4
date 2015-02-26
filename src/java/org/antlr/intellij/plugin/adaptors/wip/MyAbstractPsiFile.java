@@ -152,7 +152,6 @@ public abstract class MyAbstractPsiFile extends PsiElementBase implements PsiFil
             LOG.error("Access to tree elements not allowed in tests. path='" + viewProvider.getVirtualFile().getPresentableUrl() + "'");
         }
 
-        // Document cachedDocument = FileDocumentManager.getInstance().getCachedDocument(getViewProvider().getVirtualFile());
 
         FileASTNode fileNode = createFileASTNode(viewProvider.getContents());
         // treeElement.setPsi(this);

@@ -12,7 +12,7 @@ public class ANTLRv4ParsingTest extends ParsingTestCase {
     }
 
     public void testANTLRv4Lexer() throws Exception {
-        doTest(false);
+        doTest(true);
     }
 
     public void testANTLRv4Parser() throws Exception {

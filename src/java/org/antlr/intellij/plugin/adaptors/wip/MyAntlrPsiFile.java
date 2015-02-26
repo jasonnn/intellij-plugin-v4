@@ -24,7 +24,9 @@ public class MyAntlrPsiFile extends MyAbstractPsiFile implements PsiFileEx {
     @NotNull
     @Override
     protected FileASTNode createFileASTNode(CharSequence docText) {
-        // return new MyAntlrFileNode();
-        return super.createFileASTNode(docText);
+        MyAntlrFileNode node = new MyAntlrFileNode(getContentElementType(), docText);
+        node.setPsi(this);
+        return node;
+        //return super.createFileASTNode(docText);
     }
 }
