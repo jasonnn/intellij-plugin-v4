@@ -1,10 +1,10 @@
 package org.antlr.intellij.plugin.adaptors.wip;
 
-import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.lang.FileASTNode;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.impl.PsiFileEx;
 import com.intellij.psi.tree.IElementType;
-import org.antlr.intellij.plugin.ANTLRv4FileType;
+import org.antlr.intellij.plugin.ANTLRv4Language;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -13,18 +13,18 @@ import org.jetbrains.annotations.NotNull;
 public class MyAntlrPsiFile extends MyAbstractPsiFile implements PsiFileEx {
 
     protected MyAntlrPsiFile(@NotNull IElementType elementType, IElementType contentElementType, @NotNull FileViewProvider provider) {
-        super(elementType, contentElementType, provider);
+        super(elementType, contentElementType, provider, ANTLRv4Language.INSTANCE);
     }
 
     public MyAntlrPsiFile(@NotNull FileViewProvider provider) {
-        super(provider);
+        super(provider, ANTLRv4Language.INSTANCE);
     }
+
 
     @NotNull
     @Override
-    public FileType getFileType() {
-        return ANTLRv4FileType.INSTANCE;
+    protected FileASTNode createFileASTNode(CharSequence docText) {
+        // return new MyAntlrFileNode();
+        return super.createFileASTNode(docText);
     }
-
-
 }

@@ -1,15 +1,11 @@
 package org.antlr.intellij.plugin.adaptors.wip;
 
 import com.intellij.ide.util.PsiNavigationSupport;
-import com.intellij.lang.ASTFactory;
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.FileASTNode;
-import com.intellij.lang.Language;
+import com.intellij.lang.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Getter;
 import com.intellij.openapi.util.TextRange;
@@ -21,12 +17,12 @@ import com.intellij.psi.impl.source.SourceTreeToPsiMap;
 import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
 import com.intellij.psi.impl.source.resolve.FileContextUtil;
 import com.intellij.psi.impl.source.tree.SharedImplUtil;
-import com.intellij.psi.impl.source.tree.TreeElement;
 import com.intellij.psi.scope.PsiScopeProcessor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiElementProcessor;
 import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.ILazyParseableElementType;
 import com.intellij.reference.SoftReference;
 import com.intellij.util.IncorrectOperationException;
@@ -36,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Set;
@@ -54,24 +51,70 @@ public abstract class MyAbstractPsiFile extends PsiElementBase implements PsiFil
     protected PsiFile myOriginalFile = null;
     private final FileViewProvider myViewProvider;
     protected final PsiManagerEx myManager;
-    // private volatile Getter<FileElement> myTreeElementPointer; // SoftReference/WeakReference to ASTNode or a strong reference to a tree if the file is a DummyHolder
 
     private volatile Getter<FileASTNode> astNodePointer;
 
 
-    protected MyAbstractPsiFile(@NotNull IElementType elementType, IElementType contentElementType, @NotNull FileViewProvider provider) {
-        this(provider);
+    @NotNull
+    private final Language myLanguage;
+    @NotNull
+    private final ParserDefinition myParserDefinition;
+
+
+    protected MyAbstractPsiFile(@NotNull IElementType elementType, IElementType contentElementType, @NotNull FileViewProvider provider, @NotNull Language language) {
+        this(provider, language);
         init(elementType, contentElementType);
     }
 
-    protected MyAbstractPsiFile(@NotNull FileViewProvider provider) {
+    protected MyAbstractPsiFile(@NotNull FileViewProvider provider, @NotNull Language language) {
         myManager = (PsiManagerEx) provider.getManager();
         myViewProvider = provider;
+        myLanguage = findLanguage(language, provider);
+        final ParserDefinition parserDefinition = LanguageParserDefinitions.INSTANCE.forLanguage(myLanguage);
+        if (parserDefinition == null) {
+            throw new RuntimeException("PsiFileBase: language.getParserDefinition() returned null for: " + myLanguage);
+        }
+        myParserDefinition = parserDefinition;
+        final IFileElementType nodeType = parserDefinition.getFileNodeType();
+        assert nodeType.getLanguage() == myLanguage : nodeType.getLanguage() + " != " + myLanguage;
+        init(nodeType, nodeType);
+
     }
 
     protected void init(@NotNull final IElementType elementType, final IElementType contentElementType) {
         myElementType = elementType;
         setContentElementType(contentElementType);
+    }
+
+    private static Language findLanguage(Language baseLanguage, FileViewProvider viewProvider) {
+        final Set<Language> languages = viewProvider.getLanguages();
+        for (final Language actualLanguage : languages) {
+            if (actualLanguage.isKindOf(baseLanguage)) {
+                return actualLanguage;
+            }
+        }
+        throw new AssertionError(
+                "Language " + baseLanguage + " doesn't participate in view provider " + viewProvider + ": " + new ArrayList<Language>(languages));
+    }
+
+    @NotNull
+    public Language getLanguage() {
+        return myLanguage;
+    }
+
+    @NotNull
+    public ParserDefinition getParserDefinition() {
+        return myParserDefinition;
+    }
+
+    @NotNull
+    public FileType getFileType() {
+        return this.getViewProvider().getVirtualFile().getFileType();
+    }
+
+    @Override
+    public void accept(@NotNull PsiElementVisitor visitor) {
+        visitor.visitFile(this);
     }
 
     @NotNull
@@ -109,9 +152,9 @@ public abstract class MyAbstractPsiFile extends PsiElementBase implements PsiFil
             LOG.error("Access to tree elements not allowed in tests. path='" + viewProvider.getVirtualFile().getPresentableUrl() + "'");
         }
 
-        Document cachedDocument = FileDocumentManager.getInstance().getCachedDocument(getViewProvider().getVirtualFile());
+        // Document cachedDocument = FileDocumentManager.getInstance().getCachedDocument(getViewProvider().getVirtualFile());
 
-        FileASTNode fileNode = createFileElement(viewProvider.getContents());
+        FileASTNode fileNode = createFileASTNode(viewProvider.getContents());
         // treeElement.setPsi(this);
 
         synchronized (PsiLock.LOCK) {
@@ -132,28 +175,27 @@ public abstract class MyAbstractPsiFile extends PsiElementBase implements PsiFil
     }
 
     @NotNull
-    protected FileASTNode createFileElement(CharSequence docText) {
-        throw new UnsupportedOperationException("TODO");
-//        final FileASTNode treeElement;
-//        final FileASTNode contentLeaf = createContentLeafElement(docText);
-//
-//        if (contentLeaf instanceof FileElement) {
-//            treeElement = (FileElement) contentLeaf;
-//        } else {
-//            final CompositeElement xxx = ASTFactory.composite(myElementType);
-//            assert xxx instanceof FileElement : "BUMM";
-//            treeElement = (FileElement) xxx;
-//            treeElement.rawAddChildrenWithoutNotifications(contentLeaf);
-//        }
-//
-//        return treeElement;
+    protected FileASTNode createFileASTNode(CharSequence docText) {
+        final FileASTNode fileNode;
+        final ASTNode contentLeaf = createContentLeafNode(docText);
+
+        if (contentLeaf instanceof FileASTNode) {
+            fileNode = (FileASTNode) contentLeaf;
+        } else {
+            final ASTNode xxx = ASTFactory.composite(myElementType);
+            assert xxx instanceof FileASTNode : "BUMM";
+            fileNode = (FileASTNode) xxx;
+            fileNode.addChild(contentLeaf);
+        }
+
+        return fileNode;
     }
 
-    public TreeElement createContentLeafElement(CharSequence leafText) {
-        if (myContentElementType instanceof ILazyParseableElementType) {
-            return ASTFactory.lazy((ILazyParseableElementType) myContentElementType, leafText);
+    protected ASTNode createContentLeafNode(CharSequence leafText) {
+        if (getContentElementType() instanceof ILazyParseableElementType) {
+            return ASTFactory.lazy((ILazyParseableElementType) getContentElementType(), leafText);
         }
-        return ASTFactory.leaf(myContentElementType, leafText);
+        return ASTFactory.leaf(getContentElementType(), leafText);
     }
 
 
@@ -415,11 +457,11 @@ public abstract class MyAbstractPsiFile extends PsiElementBase implements PsiFil
         return getViewProvider().isEventSystemEnabled();
     }
 
-    @Override
-    @NotNull
-    public Language getLanguage() {
-        return myElementType.getLanguage();
-    }
+//    @Override
+//    @NotNull
+//    public Language getLanguage() {
+//        return myElementType.getLanguage();
+//    }
 
     @Override
     @NotNull

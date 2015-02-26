@@ -2,21 +2,46 @@ package org.antlr.intellij.plugin.adaptors.wip;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.FileASTNode;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.UserDataHolder;
-import com.intellij.openapi.util.UserDataHolderBase;
+import com.intellij.openapi.util.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.source.CharTableImpl;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.CharTable;
+import com.intellij.util.text.ImmutableCharSequence;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by jason on 2/24/15.
  */
-public class MyAntlrFileNode implements FileASTNode {
+public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
+
+    private volatile CharTable myCharTable = new CharTableImpl();
+    private volatile boolean myDetached;
+
+    AntlrAST grammarRoot;
+
+    PsiElement wrapper = null;
+
+    IElementType elementType;
+
+    private final UserDataHolder dataHolder = new UserDataHolderBase();
+
+
+    private CharSequence myText;
+    private final Object lock = new Object();
+
+    public MyAntlrFileNode(@NotNull IElementType type, @Nullable CharSequence text) {
+        this.elementType = type;
+        if (text != null) {
+            synchronized (lock) {
+                myText = ImmutableCharSequence.asImmutable(text);
+            }
+
+        }
+    }
+
 
     public MyAntlrFileNode(AntlrAST grammarRoot, IElementType elementType) {
         this.grammarRoot = grammarRoot;
@@ -26,20 +51,17 @@ public class MyAntlrFileNode implements FileASTNode {
     @NotNull
     @Override
     public CharTable getCharTable() {
-        //TODO
-        throw new UnsupportedOperationException();
+        return myCharTable;
     }
-
-    @Override
     public boolean isParsed() {
-       throw new UnsupportedOperationException();
+        return myText() == null;
     }
 
-     AntlrAST grammarRoot;
-
-    IElementType elementType;
-
-    private final UserDataHolder dataHolder = new UserDataHolderBase();
+    private CharSequence myText() {
+        synchronized (lock) {
+            return myText;
+        }
+    }
 
     @Override
     @Nullable
@@ -53,7 +75,7 @@ public class MyAntlrFileNode implements FileASTNode {
     }
 
 
-    PsiElement wrapper = null;
+
 
     @Override
     public PsiElement getPsi() {
@@ -227,5 +249,10 @@ public class MyAntlrFileNode implements FileASTNode {
     @Override
     public Object clone() {
        throw new UnsupportedOperationException("TODO");
+    }
+
+    @Override
+    public FileASTNode get() {
+        return this;
     }
 }

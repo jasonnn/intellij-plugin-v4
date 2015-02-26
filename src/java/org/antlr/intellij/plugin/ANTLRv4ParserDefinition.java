@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 /** The general interface between IDEA and ANTLR. */
 public class ANTLRv4ParserDefinition implements ParserDefinition {
 	public static final IFileElementType FILE =
-		new IFileElementType(ANTLRv4Language.INSTANCE);
+			new IFileElementType("ANTLRv4_FILE", ANTLRv4Language.INSTANCE);
 
 	@NotNull
 	@Override
@@ -71,6 +71,10 @@ public class ANTLRv4ParserDefinition implements ParserDefinition {
 	 */
 	@NotNull
 	public PsiElement createElement(ASTNode node) {
+//		if(node instanceof IFileElementType){
+//			FileViewProvider viewProvider = PsiManager.getInstance(project).findViewProvider()
+//
+//		}
 		return AntlrPsiFactory.createElement(node);
 		//return ANTLRv4ASTFactory.createInternalParseTreeNode(node);
 	}
