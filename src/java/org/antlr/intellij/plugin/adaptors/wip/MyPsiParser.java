@@ -1,10 +1,9 @@
 package org.antlr.intellij.plugin.adaptors.wip;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.FileASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
-import com.intellij.psi.impl.source.tree.FileElement;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import org.antlr.intellij.adaptor.lexer.PsiTokenSource;
@@ -21,6 +20,16 @@ import org.jetbrains.annotations.NotNull;
  * Created by jason on 2/23/15.
  */
 public class MyPsiParser implements PsiParser {
+
+    Project project;
+
+    public MyPsiParser() {
+    }
+
+    public MyPsiParser(Project project) {
+        this.project = project;
+    }
+
     @NotNull
     @Override
     public ASTNode parse(IElementType root, PsiBuilder builder) {

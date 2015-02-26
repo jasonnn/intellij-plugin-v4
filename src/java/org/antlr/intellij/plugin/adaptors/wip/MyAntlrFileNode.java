@@ -2,6 +2,7 @@ package org.antlr.intellij.plugin.adaptors.wip;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.FileASTNode;
+import com.intellij.lang.LighterAST;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.LogUtil;
 import com.intellij.openapi.diagnostic.Logger;
@@ -71,6 +72,12 @@ public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
     }
     public boolean isParsed() {
         return myText() == null;
+    }
+
+    @Nullable
+    @Override
+    public LighterAST getLighterAST() {
+        return null;
     }
 
     private CharSequence myText() {
