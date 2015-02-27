@@ -1,8 +1,6 @@
 package org.antlr.intellij.plugin.adaptors.wip;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.FileASTNode;
-import com.intellij.lang.LighterAST;
+import com.intellij.lang.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.LogUtil;
 import com.intellij.openapi.diagnostic.Logger;
@@ -11,12 +9,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.DebugUtil;
 import com.intellij.psi.impl.source.CharTableImpl;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.ILazyParseableElementType;
-import com.intellij.psi.tree.TokenSet;
+import com.intellij.psi.tree.*;
 import com.intellij.util.CharTable;
 import com.intellij.util.text.ImmutableCharSequence;
 import com.intellij.util.text.StringFactory;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
@@ -77,7 +74,16 @@ public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
     @Nullable
     @Override
     public LighterAST getLighterAST() {
-        return null;
+        final IFileElementType contentType = (IFileElementType) getElementType();
+        assert contentType instanceof ILightStubFileElementType : contentType;
+
+        LighterAST tree;
+        if (!isParsed()) {
+            return new FCTSBackedLighterAST(getCharTable(), ((ILightStubFileElementType<?>) contentType).parseContentsLight(this));
+        } else {
+            tree = new TreeBackedLighterAST(this);
+        }
+        return tree;
     }
 
     private CharSequence myText() {
@@ -105,44 +111,7 @@ public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
             return grammarRoot.getText().toCharArray();
         }
         throw new UnsupportedOperationException();
-        // int startStamp = myModificationsCount;
 
-        // final int len = getTextLength();
-        // return getText().toCharArray();
-
-//        if (startStamp != myModificationsCount) {
-//            throw new AssertionError(
-//                    "Tree changed while calculating text. startStamp:"+startStamp+
-//                            "; current:"+myModificationsCount+
-//                            "; myHC:"+myHC+
-//                            "; assertThreading:"+ASSERT_THREADING+
-//                            "; this: " + this +
-//                            "\n" + getThreadingDiagnostics());
-//        }
-
-//        char[] buffer = new char[len];
-//        final int endOffset;
-//        try {
-//            endOffset = AstBufferUtil.toBuffer(this, buffer, 0);
-//        }
-//        catch (ArrayIndexOutOfBoundsException e) {
-//            @NonNls String msg = "Underestimated text length: " + len;
-//           // msg += diagnoseTextInconsistency(new String(buffer), startStamp);
-//            try {
-//                int length = AstBufferUtil.toBuffer(this, new char[len], 0);
-//                msg += ";\n repetition gives success (" + length + ")";
-//            }
-//            catch (ArrayIndexOutOfBoundsException e1) {
-//                msg += ";\n repetition fails as well";
-//            }
-//            throw new RuntimeException(msg, e);
-//        }
-//        if (endOffset != len) {
-//            @NonNls String msg = "len=" + len + ";\n endOffset=" + endOffset;
-//           // msg += diagnoseTextInconsistency(new String(buffer, 0, Math.min(len, endOffset)), startStamp);
-//            throw new AssertionError(msg);
-//        }
-//        return buffer;
     }
 
 
@@ -459,5 +428,10 @@ public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
 
     public void setMyCachedLength(int myCachedLength) {
         this.myCachedLength = myCachedLength;
+    }
+
+    @NonNls
+    public String toString() {
+        return "ANTLRv4 File Node" + "(" + getElementType().toString() + ")";
     }
 }

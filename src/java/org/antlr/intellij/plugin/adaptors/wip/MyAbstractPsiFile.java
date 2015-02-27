@@ -222,9 +222,9 @@ public abstract class MyAbstractPsiFile extends PsiElementBase implements PsiFil
 
     @NotNull
     private Getter<FileASTNode> createFileASTPointer(@NotNull FileASTNode fileNode) {
-        if (isKeepTreeElementByHardReference()) {
-            throw new UnsupportedOperationException("TODO");
-            // return Getter fileNode;
+        if (isKeepTreeElementByHardReference() && fileNode instanceof Getter) {
+            return (Getter<FileASTNode>) fileNode;
+
         }
         return myManager.isBatchFilesProcessingMode()
                 ? new PatchedWeakReference<FileASTNode>(fileNode)

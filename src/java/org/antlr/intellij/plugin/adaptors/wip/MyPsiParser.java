@@ -48,9 +48,9 @@ public class MyPsiParser implements PsiParser {
             startRule = Token.INVALID_TYPE;
         }
         ASTNode result = doParse(builder, startRule);
-        if (root instanceof IFileElementType) {
-            result = new MyAntlrFileNode((AntlrAST) result, root);
-        }
+//        if (root instanceof IFileElementType) {
+//            result = new MyAntlrFileNode((AntlrAST) result, root);
+//        }
         return result;
 
 

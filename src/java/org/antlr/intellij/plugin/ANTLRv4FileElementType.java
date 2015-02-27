@@ -33,7 +33,8 @@ public class ANTLRv4FileElementType extends IFileElementType {
         final PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, null, languageForParser, chameleon.getChars());
         //final MyPsiParser parser = new MyPsiParser(project);
         final PsiParser parser = LanguageParserDefinitions.INSTANCE.forLanguage(languageForParser).createParser(project);
-        return parser.parse(this, builder).getFirstChildNode();
+        ASTNode result = parser.parse(this, builder);//.getFirstChildNode();
+        return result;
     }
 
 

@@ -3,6 +3,8 @@ package org.antlr.intellij.plugin.psi;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import org.antlr.intellij.adaptor.lexer.ElementTypeFactory;
+import org.antlr.intellij.plugin.ANTLRv4Language;
 import org.antlr.intellij.plugin.parser.ANTLRv4Parser;
 
 import static org.antlr.intellij.plugin.ANTLRv4TokenTypes.getRuleElementType;
@@ -14,6 +16,10 @@ public class AntlrPsiFactory {
 
     public static PsiElement createElement(ASTNode node) {
         final IElementType elementType = node.getElementType();
+
+        if (elementType == ElementTypeFactory.getEofElementType(ANTLRv4Language.INSTANCE)) {
+            return new AntlrWhitespace(node);
+        }
 
         if (elementType == getRuleElementType(ANTLRv4Parser.RULE_rules)) {
             return new RulesNode(node);

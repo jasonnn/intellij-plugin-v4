@@ -10,51 +10,31 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import org.antlr.intellij.plugin.adaptors.ANTLRv4GrammarParser;
 import org.antlr.intellij.plugin.adaptors.ANTLRv4LexerAdaptor;
+import org.antlr.intellij.plugin.adaptors.wip.MyAntlrPsiFile;
+import org.antlr.intellij.plugin.adaptors.wip.MyPsiParser;
 import org.antlr.intellij.plugin.parser.ANTLRv4Lexer;
 import org.antlr.intellij.plugin.psi.AntlrPsiFactory;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** The general interface between IDEA and ANTLR. */
 public class ANTLRv4ParserDefinition implements ParserDefinition {
-	public static final IFileElementType FILE =
-			new IFileElementType("ANTLRv4_FILE", ANTLRv4Language.INSTANCE) {
-				@Nullable
-				@Override
-				public ASTNode parseContents(ASTNode chameleon) {
-					System.out.println("ANTLRv4ParserDefinition.FILE.parseContents");
-					return super.parseContents(chameleon);
-				}
-
-				@Override
-				protected ASTNode doParseContents(@NotNull ASTNode chameleon, @NotNull PsiElement psi) {
-					System.out.println("ANTLRv4ParserDefinition.FILE.doParseContents");
-					return super.doParseContents(chameleon, psi);
-				}
-
-				@Nullable
-				@Override
-				public ASTNode createNode(CharSequence text) {
-					System.out.println("ANTLRv4ParserDefinition.FILE.createNode");
-					return super.createNode(text);
-				}
-			};
+//	public static final IFileElementType FILE =
+//			new IFileElementType("ANTLRv4_FILE", ANTLRv4Language.INSTANCE);
 
 	@NotNull
 	@Override
 	public Lexer createLexer(Project project) {
-		System.out.println("ANTLRv4ParserDefinition.createLexer");
+		//System.out.println("ANTLRv4ParserDefinition.createLexer");
 		ANTLRv4Lexer lexer = new ANTLRv4Lexer(null);
 		return new ANTLRv4LexerAdaptor(ANTLRv4Language.INSTANCE, lexer);
 	}
 
 	@NotNull
 	public PsiParser createParser(final Project project) {
-		System.out.println("ANTLRv4ParserDefinition.createParser");
-		//return new MyPsiParser();
-		return new ANTLRv4GrammarParser();
+		//System.out.println("ANTLRv4ParserDefinition.createParser");
+		return new MyPsiParser();
+		//return new ANTLRv4GrammarParser();
 	}
 
 	@NotNull
@@ -74,16 +54,16 @@ public class ANTLRv4ParserDefinition implements ParserDefinition {
 
 	@Override
 	public IFileElementType getFileNodeType() {
-		System.out.println("ANTLRv4ParserDefinition.getFileNodeType");
-		return FILE;
-		//return ANTLRv4FileElementType.INSTANCE;
+		//System.out.println("ANTLRv4ParserDefinition.getFileNodeType");
+		//return FILE;
+		return ANTLRv4FileElementType.INSTANCE;
 	}
 
 	@Override
 	public PsiFile createFile(FileViewProvider viewProvider) {
-		System.out.println("ANTLRv4ParserDefinition.createFile");
-		//return new MyAntlrPsiFile(viewProvider);
-		return new ANTLRv4FileRoot(viewProvider);
+		//System.out.println("ANTLRv4ParserDefinition.createFile");
+		return new MyAntlrPsiFile(viewProvider);
+		//return new ANTLRv4FileRoot(viewProvider);
 	}
 
 	public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
@@ -96,11 +76,6 @@ public class ANTLRv4ParserDefinition implements ParserDefinition {
 	 */
 	@NotNull
 	public PsiElement createElement(ASTNode node) {
-//		if(node instanceof IFileElementType){
-//			FileViewProvider viewProvider = PsiManager.getInstance(project).findViewProvider()
-//
-//		}
 		return AntlrPsiFactory.createElement(node);
-		//return ANTLRv4ASTFactory.createInternalParseTreeNode(node);
 	}
 }

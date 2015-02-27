@@ -1,6 +1,7 @@
 package org.antlr.intellij.plugin.adaptors.wip;
 
 import com.intellij.lang.FileASTNode;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.impl.PsiFileEx;
 import com.intellij.psi.tree.IElementType;
@@ -28,5 +29,11 @@ public class MyAntlrPsiFile extends MyAbstractPsiFile implements PsiFileEx {
         node.setPsi(this);
         return node;
         //return super.createFileASTNode(docText);
+    }
+
+    @Override
+    public String toString() {
+        final VirtualFile virtualFile = getVirtualFile();
+        return "ANTLRv4File: " + (virtualFile != null ? virtualFile.getName() : "<unknown>");
     }
 }
