@@ -3,7 +3,9 @@ package org.antlr.intellij.plugin.psi;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import org.antlr.intellij.adaptor.ast.AntlrWhitespace;
 import org.antlr.intellij.adaptor.lexer.ElementTypeFactory;
+import org.antlr.intellij.adaptor.psi.AntlrPsiElement;
 import org.antlr.intellij.plugin.ANTLRv4Language;
 import org.antlr.intellij.plugin.parser.ANTLRv4Parser;
 
@@ -17,6 +19,7 @@ public class AntlrPsiFactory {
     public static PsiElement createElement(ASTNode node) {
         final IElementType elementType = node.getElementType();
 
+        //TODO remove EOF from parse tree?
         if (elementType == ElementTypeFactory.getEofElementType(ANTLRv4Language.INSTANCE)) {
             return new AntlrWhitespace(node);
         }

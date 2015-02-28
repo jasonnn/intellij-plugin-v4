@@ -1,4 +1,4 @@
-package org.antlr.intellij.plugin.adaptors.wip;
+package org.antlr.intellij.adaptor.psi;
 
 import com.intellij.ide.util.PsiNavigationSupport;
 import com.intellij.lang.*;
@@ -28,6 +28,7 @@ import com.intellij.reference.SoftReference;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.PatchedWeakReference;
 import com.intellij.util.text.CharArrayUtil;
+import org.antlr.intellij.adaptor.ast.PsiASTUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,8 +41,8 @@ import java.util.Set;
 /**
  * Created by jason on 2/25/15.
  */
-public abstract class MyAbstractPsiFile extends PsiElementBase implements PsiFileEx {
-    private static final Logger LOG = Logger.getInstance("#org.antlr.intellij.plugin.adaptors.wip.MyAbstractPsiFile");
+public abstract class AbstractAntlrPsiFile extends PsiElementBase implements PsiFileEx {
+    private static final Logger LOG = Logger.getInstance("#org.antlr.intellij.adaptor.psi.AbstractAntlrPsiFile");
 
 
     private IElementType myElementType;
@@ -61,12 +62,12 @@ public abstract class MyAbstractPsiFile extends PsiElementBase implements PsiFil
     private final ParserDefinition myParserDefinition;
 
 
-    protected MyAbstractPsiFile(@NotNull IElementType elementType, IElementType contentElementType, @NotNull FileViewProvider provider, @NotNull Language language) {
+    protected AbstractAntlrPsiFile(@NotNull IElementType elementType, IElementType contentElementType, @NotNull FileViewProvider provider, @NotNull Language language) {
         this(provider, language);
         init(elementType, contentElementType);
     }
 
-    protected MyAbstractPsiFile(@NotNull FileViewProvider provider, @NotNull Language language) {
+    protected AbstractAntlrPsiFile(@NotNull FileViewProvider provider, @NotNull Language language) {
         myManager = (PsiManagerEx) provider.getManager();
         myViewProvider = provider;
         myLanguage = findLanguage(language, provider);
@@ -328,7 +329,7 @@ public abstract class MyAbstractPsiFile extends PsiElementBase implements PsiFil
 
     @Override
     @SuppressWarnings({"CloneDoesntDeclareCloneNotSupportedException", "CloneDoesntCallSuperClone"})
-    protected MyAbstractPsiFile clone() {
+    protected AbstractAntlrPsiFile clone() {
         throw new UnsupportedOperationException("TODO");
 //        FileViewProvider viewProvider = getViewProvider();
 //        FileViewProvider providerCopy = viewProvider.clone();
@@ -336,7 +337,7 @@ public abstract class MyAbstractPsiFile extends PsiElementBase implements PsiFil
 //        if (providerCopy == null) {
 //            throw new AssertionError("Unable to clone the view provider: " + viewProvider + "; " + language);
 //        }
-        // MyAbstractPsiFile clone = BlockSupportImpl.getFileCopy(this, providerCopy);
+        // AbstractAntlrPsiFile clone = BlockSupportImpl.getFileCopy(this, providerCopy);
         // copyCopyableDataTo(clone);
 
 //        if (getNode() != null) {
@@ -677,7 +678,7 @@ public abstract class MyAbstractPsiFile extends PsiElementBase implements PsiFil
 
             @Override
             public Icon getIcon(final boolean open) {
-                return MyAbstractPsiFile.this.getIcon(0);
+                return AbstractAntlrPsiFile.this.getIcon(0);
             }
         };
     }

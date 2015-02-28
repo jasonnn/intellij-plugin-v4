@@ -1,4 +1,4 @@
-package org.antlr.intellij.plugin.adaptors.wip;
+package org.antlr.intellij.adaptor.ast;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.application.ApplicationManager;
@@ -14,8 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * Created by jason on 2/25/15.
  */
 public class PsiASTUtil {
-    private static final Logger LOG = Logger.getInstance("#org.antlr.intellij.plugin.adaptors.wip.PsiASTUtil" +
-            "");
+    private static final Logger LOG = Logger.getInstance("#org.antlr.intellij.adaptor.ast.PsiASTUtil");
 
 
     @SuppressWarnings("unchecked")

@@ -1,4 +1,4 @@
-package org.antlr.intellij.plugin.adaptors.wip;
+package org.antlr.intellij.adaptor.ast;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Key;
@@ -6,35 +6,67 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLock;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import org.antlr.intellij.adaptor.lexer.ElementTypeFactory;
-import org.antlr.intellij.plugin.ANTLRv4Language;
 import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.TerminalNodeImpl;
+import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by jason on 2/23/15.
  */
-public class MyTerminalNode extends TerminalNodeImpl implements AntlrAST {
-    public MyTerminalNode(Token symbol) {
-        super(symbol);
-        int index = symbol.getType();
-        if (index == Token.EOF) {
-            elementType = ElementTypeFactory.getEofElementType(ANTLRv4Language.INSTANCE);
-        } else {
-            elementType = ANTLRv4TokenTypes.getTokenElementType(index);
+public class AntlrErrorNode extends ErrorNodeImpl implements AntlrAST {
 
+
+    public AntlrErrorNode(Token token) {
+        super(token);
+        this.elementType= ANTLRv4TokenTypes.getTokenElementType(token.getType());
+    }
+
+    int siblingIndex = -1;
+
+    PsiElement psiElement = null;
+
+    @Override
+    public PsiElement getPsi() {
+        PsiElement element = psiElement;
+        if (element != null) return element;
+
+        synchronized (PsiLock.LOCK) {
+            element = psiElement;
+            if (element != null) return element;
+
+            element = AntlrASTSupport.getPsi(this);
+            psiElement = element;
+            return element;
+        }
+    }
+
+    @Override
+    public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
+        return clazz.cast(getPsi());
+    }
+
+    @Override
+    public int getSiblingIndex() {
+        int index = siblingIndex;
+        if (index != -1) return index;
+
+        synchronized (PsiLock.LOCK) {
+            index = siblingIndex;
+            if (index != -1) return index;
+
+            index = AntlrASTSupport.getSiblingIndex(this);
+            siblingIndex = index;
+            return index;
         }
     }
 
 
     IElementType elementType;
-
-    int siblingIndex = -1;
     private final UserDataHolder dataHolder = new UserDataHolderBase();
 
     @Override
@@ -48,39 +80,13 @@ public class MyTerminalNode extends TerminalNodeImpl implements AntlrAST {
         dataHolder.putUserData(key, value);
     }
 
-    @Override
-    public int getSiblingIndex() {
-        int index = siblingIndex;
-        if (index == -1) {
-            index = AntlrASTSupport.getSiblingIndex(this);
-            assert index != -1;
-            siblingIndex = index;
-        }
-        return index;
-    }
-
-    PsiElement wrapper = null;
-
-    @Override
-    public PsiElement getPsi() {
-        PsiElement psi = wrapper;
-        if (psi == null) {
-            psi = wrapper = AntlrASTSupport.getPsi(this);
-        }
-        return psi;
-    }
-
-    @Override
-    public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
-        return clazz.cast(getPsi());
-    }
-
-
+    @NotNull
     @Override
     public IElementType getElementType() {
         return elementType;
     }
 
+    @NotNull
     @Override
     public CharSequence getChars() {
         return AntlrASTSupport.getChars(this);
@@ -131,6 +137,7 @@ public class MyTerminalNode extends TerminalNodeImpl implements AntlrAST {
         return AntlrASTSupport.getTreePrev(this);
     }
 
+    @NotNull
     @Override
     public ASTNode[] getChildren(@Nullable TokenSet filter) {
         return AntlrASTSupport.getChildren(this, filter);
@@ -189,12 +196,12 @@ public class MyTerminalNode extends TerminalNodeImpl implements AntlrAST {
 
     @Nullable
     @Override
-    public <T> T getCopyableUserData(Key<T> key) {
+    public <T> T getCopyableUserData(@NotNull Key<T> key) {
         return AntlrASTSupport.getCopyableUserData(this, key);
     }
 
     @Override
-    public <T> void putCopyableUserData(Key<T> key, T value) {
+    public <T> void putCopyableUserData(@NotNull Key<T> key, T value) {
         AntlrASTSupport.putCopyableUserData(this, key, value);
     }
 
@@ -223,9 +230,9 @@ public class MyTerminalNode extends TerminalNodeImpl implements AntlrAST {
     }
 
 
+    @NotNull
     @Override
     public Object clone() {
         return AntlrASTSupport.handleClone(this);
     }
-
 }

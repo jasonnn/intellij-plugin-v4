@@ -1,4 +1,4 @@
-package org.antlr.intellij.plugin.adaptors.wip;
+package org.antlr.intellij.plugin.psi;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
@@ -6,6 +6,7 @@ import com.intellij.lang.PsiParser;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
+import org.antlr.intellij.adaptor.ast.AntlrAST;
 import org.antlr.intellij.adaptor.lexer.PsiTokenSource;
 import org.antlr.intellij.adaptor.parser.SyntaxErrorListener;
 import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
@@ -35,6 +36,7 @@ public class MyPsiParser implements PsiParser {
     public ASTNode parse(IElementType root, PsiBuilder builder) {
         TokenStream tokenStream = new CommonTokenStream(new PsiTokenSource(builder));
         ANTLRv4Parser parser = new ANTLRv4Parser(tokenStream);
+        parser.setBuildParseTree(true);
         parser.removeErrorListeners();
         parser.addErrorListener(new SyntaxErrorListener());
 
@@ -49,7 +51,7 @@ public class MyPsiParser implements PsiParser {
         }
         ASTNode result = doParse(builder, startRule);
 //        if (root instanceof IFileElementType) {
-//            result = new MyAntlrFileNode((AntlrAST) result, root);
+//            result = new AntlrFileNode((AntlrAST) result, root);
 //        }
         return result;
 

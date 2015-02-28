@@ -42,7 +42,7 @@ def patch_parser():
     require(parsers)
 
     find = "extends ParserRuleContext"
-    replace_with = "extends org.antlr.intellij.plugin.adaptors.wip.MyAntlrRuleContext"
+    replace_with = "extends org.antlr.intellij.adaptor.ast.AntlrASTRuleContext"
 
     src_file = "gen/org/antlr/intellij/plugin/parser/ANTLRv4Parser.java"
     patched_code = open(src_file).read().replace(find, replace_with)

@@ -1,8 +1,9 @@
-package org.antlr.intellij.plugin.psi;
+package org.antlr.intellij.adaptor.ast;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiWhiteSpace;
 import org.antlr.intellij.adaptor.lexer.ElementTypeFactory;
+import org.antlr.intellij.adaptor.psi.AntlrPsiElement;
 import org.antlr.intellij.plugin.ANTLRv4Language;
 
 /**

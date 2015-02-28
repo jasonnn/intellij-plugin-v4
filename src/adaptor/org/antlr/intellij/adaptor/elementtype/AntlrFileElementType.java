@@ -1,22 +1,29 @@
-package org.antlr.intellij.plugin;
+package org.antlr.intellij.adaptor.elementtype;
 
 import com.intellij.lang.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IFileElementType;
-import org.antlr.intellij.plugin.adaptors.wip.MyAntlrFileNode;
+import org.antlr.intellij.adaptor.ast.AntlrFileNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by jason on 2/25/15.
+ *
+ * this is where parsing actually starts.
  */
-public class ANTLRv4FileElementType extends IFileElementType {
-    public static ANTLRv4FileElementType INSTANCE = new ANTLRv4FileElementType();
+public class AntlrFileElementType extends IFileElementType {
 
-    private ANTLRv4FileElementType() {
-        super("ANTLRv4_File", ANTLRv4Language.INSTANCE, true);
+    public AntlrFileElementType(@NotNull String debugName, @Nullable Language language) {
+        super(debugName, language);
     }
+
+    public AntlrFileElementType(@Nullable Language language) {
+        super(language);
+    }
+
+
 
     @Nullable
     @Override
@@ -41,7 +48,7 @@ public class ANTLRv4FileElementType extends IFileElementType {
     @Nullable
     @Override
     public ASTNode createNode(CharSequence text) {
-        return new MyAntlrFileNode(this, text);
+        return new AntlrFileNode(this, text);
     }
 
 

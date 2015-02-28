@@ -1,4 +1,4 @@
-package org.antlr.intellij.plugin.adaptors.wip;
+package org.antlr.intellij.adaptor.ast;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.Key;
@@ -6,6 +6,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLock;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.antlr.intellij.plugin.ANTLRv4TokenTypes;
@@ -22,24 +23,25 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by jason on 2/23/15.
  */
-public class MyAntlrRuleContext extends ParserRuleContext implements AntlrAST {
+public class AntlrASTRuleContext extends ParserRuleContext implements AntlrAST {
 
 
-    public MyAntlrRuleContext(ParserRuleContext parent, int invokingStateNumber) {
+    public AntlrASTRuleContext(ParserRuleContext parent, int invokingStateNumber) {
         super(parent, invokingStateNumber);
         //noinspection MagicConstant
         this.elementType = ANTLRv4TokenTypes.getRuleElementType(getRuleIndex());
     }
-    /* ---- DO NOT DELETE THE FOLLOWING 4 METHODS ---- */
+
+    /* ---- DO NOT COPY&PASTE OVER THE FOLLOWING 4 METHODS ---- */
     public TerminalNode addChild(Token matchedToken) {
-        TerminalNodeImpl t = new MyTerminalNode(matchedToken);
+        TerminalNodeImpl t = new AntlrTerminalNode(matchedToken);
         addChild(t);
         t.parent = this;
         return t;
     }
 
     public ErrorNode addErrorNode(Token badToken) {
-        ErrorNodeImpl t = new MyErrorNode(badToken);
+        ErrorNodeImpl t = new AntlrErrorNode(badToken);
         addChild(t);
         t.parent = this;
         return t;
@@ -58,25 +60,46 @@ public class MyAntlrRuleContext extends ParserRuleContext implements AntlrAST {
 
 
     IElementType elementType;
-
-    int siblingIndex = -1;
     private final UserDataHolder dataHolder = new UserDataHolderBase();
 
-    PsiElement wrapper = null;
+
+    int siblingIndex = -1;
+
+    PsiElement psiElement = null;
 
     @Override
     public PsiElement getPsi() {
-        //TODO double checked locking
-        PsiElement psi = wrapper;
-        if (psi == null) {
-            psi = wrapper = AntlrASTSupport.getPsi(this);
+        PsiElement element = psiElement;
+        if (element != null) return element;
+
+        synchronized (PsiLock.LOCK) {
+            element = psiElement;
+            if (element != null) return element;
+
+            element = AntlrASTSupport.getPsi(this);
+            psiElement = element;
+            return element;
         }
-        return psi;
     }
 
     @Override
     public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
         return clazz.cast(getPsi());
+    }
+
+    @Override
+    public int getSiblingIndex() {
+        int index = siblingIndex;
+        if (index != -1) return index;
+
+        synchronized (PsiLock.LOCK) {
+            index = siblingIndex;
+            if (index != -1) return index;
+
+            index = AntlrASTSupport.getSiblingIndex(this);
+            siblingIndex = index;
+            return index;
+        }
     }
 
 
@@ -91,32 +114,14 @@ public class MyAntlrRuleContext extends ParserRuleContext implements AntlrAST {
         dataHolder.putUserData(key, value);
     }
 
-    @Override
-    public int getSiblingIndex() {
-        int index = siblingIndex;
-        if (index == -1) {
-            index = AntlrASTSupport.getSiblingIndex(this);
-            assert index != -1;
-            siblingIndex = index;
-        }
-        return index;
-    }
 
-//    @Override
-//    public PsiElement getPsi() {
-//        return null;
-//    }
-//
-//    @Override
-//    public <T extends PsiElement> T getPsi(@NotNull Class<T> clazz) {
-//        return null;
-//    }
-
+    @NotNull
     @Override
     public IElementType getElementType() {
         return elementType;
     }
 
+    @NotNull
     @Override
     public CharSequence getChars() {
         return AntlrASTSupport.getChars(this);
@@ -167,6 +172,7 @@ public class MyAntlrRuleContext extends ParserRuleContext implements AntlrAST {
         return AntlrASTSupport.getTreePrev(this);
     }
 
+    @NotNull
     @Override
     public ASTNode[] getChildren(@Nullable TokenSet filter) {
         return AntlrASTSupport.getChildren(this, filter);
@@ -225,12 +231,12 @@ public class MyAntlrRuleContext extends ParserRuleContext implements AntlrAST {
 
     @Nullable
     @Override
-    public <T> T getCopyableUserData(Key<T> key) {
+    public <T> T getCopyableUserData(@NotNull Key<T> key) {
         return AntlrASTSupport.getCopyableUserData(this, key);
     }
 
     @Override
-    public <T> void putCopyableUserData(Key<T> key, T value) {
+    public <T> void putCopyableUserData(@NotNull Key<T> key, T value) {
         AntlrASTSupport.putCopyableUserData(this, key, value);
     }
 

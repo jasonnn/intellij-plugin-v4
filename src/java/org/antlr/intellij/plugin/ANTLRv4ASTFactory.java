@@ -13,17 +13,12 @@ import com.intellij.psi.tree.IFileElementType;
 import org.antlr.intellij.adaptor.parser.PsiElementFactory;
 import org.antlr.intellij.plugin.parser.ANTLRv4Lexer;
 import org.antlr.intellij.plugin.parser.ANTLRv4Parser;
-import org.antlr.intellij.plugin.psi.AtAction;
-import org.antlr.intellij.plugin.psi.GrammarSpecNode;
-import org.antlr.intellij.plugin.psi.LexerRuleRefNode;
-import org.antlr.intellij.plugin.psi.LexerRuleSpecNode;
-import org.antlr.intellij.plugin.psi.ParserRuleRefNode;
-import org.antlr.intellij.plugin.psi.ParserRuleSpecNode;
-import org.antlr.intellij.plugin.psi.RulesNode;
+import org.antlr.intellij.plugin.psi.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated //No longer used
 public class ANTLRv4ASTFactory extends ASTFactory {
 	private static final Map<IElementType, PsiElementFactory> ruleElementTypeToPsiFactory = new HashMap<IElementType, PsiElementFactory>();
 	static {

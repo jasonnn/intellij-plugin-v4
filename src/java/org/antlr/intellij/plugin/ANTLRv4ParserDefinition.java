@@ -10,17 +10,18 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
+import org.antlr.intellij.adaptor.elementtype.AntlrFileElementType;
+import org.antlr.intellij.adaptor.psi.AntlrPsiFile;
 import org.antlr.intellij.plugin.adaptors.ANTLRv4LexerAdaptor;
-import org.antlr.intellij.plugin.adaptors.wip.MyAntlrPsiFile;
-import org.antlr.intellij.plugin.adaptors.wip.MyPsiParser;
 import org.antlr.intellij.plugin.parser.ANTLRv4Lexer;
 import org.antlr.intellij.plugin.psi.AntlrPsiFactory;
+import org.antlr.intellij.plugin.psi.MyPsiParser;
 import org.jetbrains.annotations.NotNull;
 
 /** The general interface between IDEA and ANTLR. */
 public class ANTLRv4ParserDefinition implements ParserDefinition {
-//	public static final IFileElementType FILE =
-//			new IFileElementType("ANTLRv4_FILE", ANTLRv4Language.INSTANCE);
+	public static final IFileElementType FILE =
+			new AntlrFileElementType("ANTLRv4_FILE", ANTLRv4Language.INSTANCE);
 
 	@NotNull
 	@Override
@@ -55,14 +56,13 @@ public class ANTLRv4ParserDefinition implements ParserDefinition {
 	@Override
 	public IFileElementType getFileNodeType() {
 		//System.out.println("ANTLRv4ParserDefinition.getFileNodeType");
-		//return FILE;
-		return ANTLRv4FileElementType.INSTANCE;
+		return FILE;
 	}
 
 	@Override
 	public PsiFile createFile(FileViewProvider viewProvider) {
 		//System.out.println("ANTLRv4ParserDefinition.createFile");
-		return new MyAntlrPsiFile(viewProvider);
+		return new AntlrPsiFile(viewProvider);
 		//return new ANTLRv4FileRoot(viewProvider);
 	}
 

@@ -1,4 +1,4 @@
-package org.antlr.intellij.plugin.adaptors.wip;
+package org.antlr.intellij.adaptor.ast;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;

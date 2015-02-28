@@ -1,4 +1,4 @@
-package org.antlr.intellij.plugin.adaptors.wip;
+package org.antlr.intellij.adaptor.ast;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 

@@ -1,4 +1,4 @@
-package org.antlr.intellij.plugin.adaptors.wip;
+package org.antlr.intellij.adaptor.ast;
 
 import com.intellij.lang.*;
 import com.intellij.openapi.application.ApplicationManager;
@@ -20,12 +20,18 @@ import org.jetbrains.annotations.TestOnly;
 
 /**
  * Created by jason on 2/24/15.
+ *
+ * We have to implement this ourselves because the one intellij provides does a lot of casting of ASTNodes
+ * to concrete types.
+ * @see com.intellij.psi.impl.source.tree.FileElement
  */
-public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
+
+//TODO see if this is whats causing ideas indexing system to go nuts.
+//TODO: some of these methods are probably implemented incorrectly. Many are implemented poorly.
+public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
 
 
-    private static final Logger LOG = Logger.getInstance("#org.antlr.intellij.plugin.adaptors.wip.MyAntlrFileNode");
-
+    private static final Logger LOG = Logger.getInstance("#org.antlr.intellij.adaptor.ast.AntlrFileNode");
 
 
     private volatile CharTable myCharTable = new CharTableImpl();
@@ -45,7 +51,7 @@ public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
     private CharSequence myText;
     private final Object lock = new Object();
 
-    public MyAntlrFileNode(@NotNull IElementType type, @Nullable CharSequence text) {
+    public AntlrFileNode(@NotNull IElementType type, @Nullable CharSequence text) {
         this.elementType = type;
         if (text != null) {
             synchronized (lock) {
@@ -57,7 +63,7 @@ public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
     }
 
 
-    public MyAntlrFileNode(AntlrAST grammarRoot, IElementType elementType) {
+    public AntlrFileNode(AntlrAST grammarRoot, IElementType elementType) {
         this.grammarRoot = grammarRoot;
         this.elementType = elementType;
     }
@@ -67,6 +73,7 @@ public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
     public CharTable getCharTable() {
         return myCharTable;
     }
+
     public boolean isParsed() {
         return myText() == null;
     }
@@ -218,8 +225,6 @@ public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
     }
 
 
-
-
     @Override
     public PsiElement getPsi() {
         PsiElement psi = wrapper;
@@ -251,7 +256,7 @@ public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
 
     @Override
     public boolean textContains(char c) {
-       return grammarRoot.textContains(c);
+        return grammarRoot.textContains(c);
     }
 
     @Override
@@ -293,18 +298,17 @@ public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
 
     @Override
     public ASTNode getTreePrev() {
-       return null;
+        return null;
     }
 
     @Override
     public ASTNode[] getChildren(@Nullable TokenSet filter) {
-        //TODO
         return new ASTNode[]{grammarRoot};
     }
 
     @Override
     public void addChild(@NotNull ASTNode child) {
-        this.grammarRoot= (AntlrAST) child;
+        this.grammarRoot = (AntlrAST) child;
     }
 
     @Override
@@ -314,12 +318,12 @@ public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
 
     @Override
     public void addLeaf(@NotNull IElementType leafType, CharSequence leafText, @Nullable ASTNode anchorBefore) {
-       throw new UnsupportedOperationException("should not contain leafs");
+        throw new UnsupportedOperationException("should not contain leafs");
     }
 
     @Override
     public void removeChild(@NotNull ASTNode child) {
-       throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -392,7 +396,7 @@ public class MyAntlrFileNode implements FileASTNode, Getter<FileASTNode> {
 
     @Override
     public Object clone() {
-       throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
