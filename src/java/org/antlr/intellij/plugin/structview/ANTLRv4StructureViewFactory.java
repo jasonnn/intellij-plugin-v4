@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import org.antlr.intellij.adaptor.psi.AntlrPsiFile;
 import org.antlr.intellij.plugin.ANTLRv4FileRoot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +52,7 @@ public class ANTLRv4StructureViewFactory implements PsiStructureViewFactory {
 				if ( grammarFile==null || !grammarFile.getName().endsWith(".g4") ) {
 					return new StructureViewModelBase(psiFile, new DummyViewTreeElement(psiFile));
 				}
-                return new ANTLRv4StructureViewModel((ANTLRv4FileRoot)psiFile);
+                return new ANTLRv4StructureViewModel((AntlrPsiFile)psiFile);
             }
         };
     }

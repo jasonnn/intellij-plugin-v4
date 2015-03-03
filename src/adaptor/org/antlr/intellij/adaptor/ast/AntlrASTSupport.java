@@ -4,14 +4,22 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.LanguageParserDefinitions;
 import com.intellij.lang.ParserDefinition;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.UserDataHolder;
+import com.intellij.openapi.util.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.source.tree.ForeignLeafPsiElement;
+import com.intellij.psi.impl.source.tree.LeafElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by jason on 2/24/15.
@@ -32,17 +40,66 @@ public class AntlrASTSupport {
     }
 
     public static int getStartOffset(ParseTree tree) {
-        //TODO probably not correct;
-        return tree.getSourceInterval().a;
+        Object payload = tree.getPayload();
+        if (payload instanceof ParserRuleContext) {
+            return startOfs(((ParserRuleContext) payload).start);
+        }
+        if (payload instanceof Token) {
+            return startOfs((Token) payload);
+        }
+        throw new UnsupportedOperationException("???");
+        // return tree.getSourceInterval().a;
+    }
+
+    public static int getStopOffset(ParseTree tree) {
+        Object payload = tree.getPayload();
+        if (payload instanceof ParserRuleContext) {
+            return startOfs(((ParserRuleContext) payload).stop);
+        }
+        if (payload instanceof Token) {
+            return endOfs((Token) payload);
+        }
+        throw new UnsupportedOperationException("???");
+    }
+
+    static int startOfs(Token t) {
+        int startIndex = t.getStartIndex();
+        assert startIndex != -1;
+        return startIndex;
+    }
+
+    static int endOfs(Token t) {
+        int endIndex = t.getStopIndex();
+        assert endIndex != -1;
+        return endIndex;
     }
 
     public static int getTextLength(ParseTree tree) {
-        return tree.getText().length();
+        String text = tree.getText();
+        if (text == null) return 0;
+        return text.length();
     }
 
     public static TextRange getTextRange(ParseTree tree) {
-        Interval interval = tree.getSourceInterval();
-        return TextRange.from(interval.a, interval.length());
+        int start = getStartOffset(tree);
+        int stop = getStopOffset(tree);
+        if (start > stop) {
+            Object payload = tree.getPayload();
+            if (payload instanceof TerminalNode) {
+                payload = ((TerminalNode) payload).getSymbol();
+            }
+            if (!(payload instanceof Token)) {
+                return TextRange.create(getStopOffset(tree), getStartOffset(tree));
+            }
+            //assert payload instanceof Token: payload.getClass();
+            Token t = (Token) payload;
+            assert t.getType() == Token.EOF;
+            return TextRange.from(getStartOffset(tree), 0);
+            // return new UnfairTextRange(getStartOffset(tree),getStopOffset(tree));
+        }
+        return TextRange.create(getStartOffset(tree), getStopOffset(tree));
+        // Interval interval = tree.getSourceInterval();
+        // return TextRange.from(interval.a, interval.length());
     }
 
     public static ASTNode getTreeParent(ParseTree tree) {
@@ -71,14 +128,13 @@ public class AntlrASTSupport {
     public static ASTNode getTreePrev(SiblingIndexParseTree tree) {
         ParseTree parent = tree.getParent();
         if (parent == null) return null;
-        int nextIndex = tree.getSiblingIndex() - 1;
-        if (nextIndex <= 0) return null;
-        return (ASTNode) parent.getChild(nextIndex);
+        int prevIndex = tree.getSiblingIndex() - 1;
+        if (prevIndex < 0) return null;
+        return (ASTNode) parent.getChild(prevIndex);
     }
 
-    public static ASTNode[] getChildren(ParseTree tree, TokenSet filter) {
-        //TODO
-        return new ASTNode[0];
+    public static ASTNode[] getChildren(ASTNode parent, TokenSet filter) {
+        return filter == null ? ASTUtil.collectChildren(parent) : ASTUtil.collectChildren(parent, filter);
     }
 
     public static void addChild(ParseTree tree, ASTNode child) {
@@ -118,15 +174,55 @@ public class AntlrASTSupport {
     }
 
     public static ASTNode findLeafElementAt(ParseTree tree, int offset) {
-        throw new UnsupportedOperationException("todo!!");
+        if (tree instanceof TerminalNode) {
+            return (ASTNode) tree;
+        }
+        ASTNode element = (ASTNode) tree;
+        startFind:
+        while (true) {
+            ASTNode child = element.getFirstChildNode();
+            ASTNode lastChild = element.getLastChildNode();
+            int elementTextLength = element.getTextLength();
+            boolean fwd = lastChild == null || elementTextLength / 2 > offset;
+            if (!fwd) {
+                child = lastChild;
+                offset = elementTextLength - offset;
+            }
+            while (child != null) {
+                final int textLength = child.getTextLength();
+                if (textLength > offset || !fwd && textLength >= offset) {
+                    if (child instanceof TerminalNode) {
+//                        if (child instanceof ForeignLeafPsiElement) {
+//                            child = fwd ? child.getTreeNext() : child.getTreePrev();
+//                            continue;
+//                        }
+                        return child;
+                    }
+                    offset = fwd ? offset : textLength - offset;
+                    element = child;
+                    continue startFind;
+                }
+                offset -= textLength;
+                child = fwd ? child.getTreeNext() : child.getTreePrev();
+            }
+            return null;
+        }
+    }
+
+    public static <D> D getCopyableUserData(UserDataHolderBase dataHolder, Key<D> key) {
+        return ASTUtil.getCopyableUserData(dataHolder, key);
+    }
+
+    public static <T> void putCopyableUserData(UserDataHolderBase dataHolder, Key<T> key, T value) {
+        ASTUtil.putCopyableUserData(dataHolder, key, value);
     }
 
     public static <D> D getCopyableUserData(UserDataHolder dataHolder, Key<D> key) {
-        throw new UnsupportedOperationException("todo!!");
+        return ASTUtil.getCopyableUserData(dataHolder, key);
     }
 
     public static <T> void putCopyableUserData(UserDataHolder dataHolder, Key<T> key, T value) {
-        throw new UnsupportedOperationException("todo!!");
+        ASTUtil.putCopyableUserData(dataHolder, key, value);
     }
 
     public static ASTNode findChildByType(ParseTree tree, IElementType type) {
@@ -206,4 +302,32 @@ public class AntlrASTSupport {
     public static <T extends PsiElement> T getPsi(ASTNode node, Class<T> clazz) {
         return clazz.cast(getPsi(node));
     }
+
+    public static void copyNodeAndReparentChildren(ParserRuleContext original, ParserRuleContext newCtx) {
+        newCtx.copyFrom(original);
+        newCtx.children = original.children;
+        reparentChildren(newCtx);
+    }
+
+    static void reparentChildren(ParserRuleContext parent) {
+        reparentChildren(parent.children, parent);
+    }
+
+    public static void reparentChildren(@Nullable List<ParseTree> children, @NotNull RuleContext newParent) {
+        if (children == null) children = Collections.emptyList();
+        doReparentChildren(children, newParent);
+    }
+
+    static void doReparentChildren(List<ParseTree> children, RuleContext newParent) {
+        for (ParseTree child : children) {
+            if (child instanceof RuleContext) {
+                ((RuleContext) child).parent = newParent;
+            } else if (child instanceof TerminalNodeImpl) {
+                ((TerminalNodeImpl) child).parent = newParent;
+            } else {
+                throw new UnsupportedOperationException("???");
+            }
+        }
+    }
+
 }

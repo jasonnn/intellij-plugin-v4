@@ -35,7 +35,7 @@ public class ANTLRv4ParsingTest extends ParsingTestCase {
         ensureParsed(psiFile);
 
 
-        System.out.println(psiFile);
+      //  System.out.println(psiFile);
 
     }
 

@@ -9,6 +9,7 @@ import com.intellij.ide.util.treeView.smartTree.ActionPresentationData;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.ide.util.treeView.smartTree.SorterUtil;
 import com.intellij.psi.PsiFile;
+import org.antlr.intellij.adaptor.psi.AntlrPsiFile;
 import org.antlr.intellij.plugin.ANTLRv4FileRoot;
 import org.antlr.intellij.plugin.psi.LexerRuleSpecNode;
 import org.antlr.intellij.plugin.psi.ParserRuleSpecNode;
@@ -62,12 +63,14 @@ public class ANTLRv4StructureViewModel
 		}
 	};
 
-	ANTLRv4FileRoot rootElement;
+	AntlrPsiFile rootElement;
 
-	public ANTLRv4StructureViewModel(ANTLRv4FileRoot rootElement) {
+	public ANTLRv4StructureViewModel(AntlrPsiFile rootElement) {
 		super(rootElement, new ANTLRv4StructureViewElement(rootElement));
 		this.rootElement = rootElement;
 	}
+
+
 
 
 	@NotNull

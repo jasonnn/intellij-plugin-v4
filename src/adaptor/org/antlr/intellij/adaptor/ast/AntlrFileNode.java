@@ -7,28 +7,34 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiLock;
 import com.intellij.psi.impl.DebugUtil;
 import com.intellij.psi.impl.source.CharTableImpl;
 import com.intellij.psi.tree.*;
 import com.intellij.util.CharTable;
 import com.intellij.util.text.ImmutableCharSequence;
 import com.intellij.util.text.StringFactory;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 
+import java.util.List;
+
 /**
  * Created by jason on 2/24/15.
- *
+ * <p/>
  * We have to implement this ourselves because the one intellij provides does a lot of casting of ASTNodes
  * to concrete types.
+ *
  * @see com.intellij.psi.impl.source.tree.FileElement
  */
 
 //TODO see if this is whats causing ideas indexing system to go nuts.
 //TODO: some of these methods are probably implemented incorrectly. Many are implemented poorly.
-public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
+public class AntlrFileNode extends ParserRuleContext implements FileASTNode, Getter<FileASTNode>,AntlrAST {
 
 
     private static final Logger LOG = Logger.getInstance("#org.antlr.intellij.adaptor.ast.AntlrFileNode");
@@ -38,10 +44,12 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
     private volatile boolean myDetached;
     private volatile int myCachedLength = -1;
 
+    int siblingIndex=-1;
 
-    AntlrAST grammarRoot;
 
-    PsiElement wrapper = null;
+    // AntlrAST grammarRoot;
+
+    PsiElement psi = null;
 
     IElementType elementType;
 
@@ -64,8 +72,12 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
 
 
     public AntlrFileNode(AntlrAST grammarRoot, IElementType elementType) {
-        this.grammarRoot = grammarRoot;
         this.elementType = elementType;
+        setRoot(grammarRoot);
+    }
+
+    public void setRoot(AntlrAST node) {
+        AntlrASTSupport.copyNodeAndReparentChildren((ParserRuleContext) node, this);
     }
 
     @NotNull
@@ -114,10 +126,7 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
 
     public char[] textToCharArray() {
         ApplicationManager.getApplication().assertReadAccessAllowed();
-        if (grammarRoot != null) {
-            return grammarRoot.getText().toCharArray();
-        }
-        throw new UnsupportedOperationException();
+        return super.getText().toCharArray();
 
     }
 
@@ -144,24 +153,26 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
 
     @Override
     public int getTextLength() {
-        CharSequence text = myText();
-        if (text != null) {
-            return text.length();
-        }
-        if (grammarRoot != null) {
-            return grammarRoot.getTextLength();
-        }
-        throw new UnsupportedOperationException("TODO");
+        return getTextRange().getLength();
+//        CharSequence text = myText();
+//        if (text != null) {
+//            return text.length();
+//        }
+//        if (grammarRoot != null) {
+//            return grammarRoot.getTextLength();
+//        }
+//        throw new UnsupportedOperationException("TODO");
         //return super.getTextLength();
     }
 
 
     public int getNotCachedLength() {
-        CharSequence text = myText();
-        if (text != null) {
-            return text.length();
-        }
-        throw new UnsupportedOperationException("TODO");
+        return -1;
+//        CharSequence text = myText();
+//        if (text != null) {
+//            return text.length();
+//        }
+//        throw new UnsupportedOperationException("TODO");
 
         //return super.getNotCachedLength();
     }
@@ -227,9 +238,9 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
 
     @Override
     public PsiElement getPsi() {
-        PsiElement psi = wrapper;
+        PsiElement psi = this.psi;
         if (psi == null) {
-            psi = wrapper = AntlrASTSupport.getPsi(this);
+            psi = this.psi = AntlrASTSupport.getPsi(this);
         }
         return psi;
     }
@@ -239,6 +250,7 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
         return clazz.cast(getPsi());
     }
 
+    @NotNull
     @Override
     public IElementType getElementType() {
         return elementType;
@@ -256,7 +268,7 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
 
     @Override
     public boolean textContains(char c) {
-        return grammarRoot.textContains(c);
+       return AntlrASTSupport.textContains(this,c);
     }
 
     @Override
@@ -271,7 +283,7 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
 
     @Override
     public TextRange getTextRange() {
-        return grammarRoot.getTextRange();
+        return AntlrASTSupport.getTextRange(this);
     }
 
     @Override
@@ -282,13 +294,13 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
     @Override
     public ASTNode getFirstChildNode() {
         ensureParsed();
-        return grammarRoot;
+        return AntlrASTSupport.getFirstChildNode(this);
     }
 
     @Override
     public ASTNode getLastChildNode() {
         ensureParsed();
-        return grammarRoot;
+       return AntlrASTSupport.getLastChildNode(this);
     }
 
     @Override
@@ -301,14 +313,15 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
         return null;
     }
 
+    @NotNull
     @Override
     public ASTNode[] getChildren(@Nullable TokenSet filter) {
-        return new ASTNode[]{grammarRoot};
+        return AntlrASTSupport.getChildren(this, filter);
     }
 
     @Override
     public void addChild(@NotNull ASTNode child) {
-        this.grammarRoot = (AntlrAST) child;
+        setRoot((AntlrAST) child);
     }
 
     @Override
@@ -371,26 +384,25 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
     @Nullable
     @Override
     public ASTNode findChildByType(IElementType type) {
-        //TODO
-        return grammarRoot;
+        return AntlrASTSupport.findChildByType(this, type);
     }
 
     @Nullable
     @Override
     public ASTNode findChildByType(IElementType type, @Nullable ASTNode anchor) {
-        return grammarRoot;
+        return AntlrASTSupport.findChildByType(this, type, anchor);
     }
 
     @Nullable
     @Override
     public ASTNode findChildByType(@NotNull TokenSet typesSet) {
-        return grammarRoot;
+        return AntlrASTSupport.findChildByType(this, typesSet);
     }
 
     @Nullable
     @Override
     public ASTNode findChildByType(@NotNull TokenSet typesSet, @Nullable ASTNode anchor) {
-        return grammarRoot;
+        return AntlrASTSupport.findChildByType(this, typesSet, anchor);
     }
 
 
@@ -405,7 +417,7 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
     }
 
     public void setPsi(PsiFile psiFile) {
-        this.wrapper = psiFile;
+        this.psi = psiFile;
     }
 
 
@@ -437,5 +449,21 @@ public class AntlrFileNode implements FileASTNode, Getter<FileASTNode> {
     @NonNls
     public String toString() {
         return "ANTLRv4 File Node" + "(" + getElementType().toString() + ")";
+    }
+
+
+    @Override
+    public int getSiblingIndex() {
+        int index = siblingIndex;
+        if (index != -1) return index;
+
+        synchronized (PsiLock.LOCK) {
+            index = siblingIndex;
+            if (index != -1) return index;
+
+            index = AntlrASTSupport.getSiblingIndex(this);
+            siblingIndex = index;
+            return index;
+        }
     }
 }

@@ -60,7 +60,7 @@ public class AntlrASTRuleContext extends ParserRuleContext implements AntlrAST {
 
 
     IElementType elementType;
-    private final UserDataHolder dataHolder = new UserDataHolderBase();
+    private final UserDataHolderBase dataHolder = new UserDataHolderBase();
 
 
     int siblingIndex = -1;

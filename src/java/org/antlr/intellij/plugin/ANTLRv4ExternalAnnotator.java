@@ -199,7 +199,7 @@ public class ANTLRv4ExternalAnnotator extends ExternalAnnotator<PsiFile, List<AN
 
 		@Override
 		public void run() {
-			vocabName = MyPsiUtils.findTokenVocabIfAny((ANTLRv4FileRoot) file);
+			vocabName = MyPsiUtils.findTokenVocabIfAny(file);
 		}
 	}
 }

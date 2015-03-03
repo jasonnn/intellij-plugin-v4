@@ -225,7 +225,7 @@ public class MyPsiUtils {
 	}
 
 	// Look for stuff like: options { tokenVocab=ANTLRv4Lexer; superClass=Foo; }
-	public static String findTokenVocabIfAny(ANTLRv4FileRoot file) {
+	public static String findTokenVocabIfAny(PsiFile file) {
 		String vocabName = null;
 		PsiElement[] options = collectNodesWithName(file, "option");
 		for (PsiElement o : options) {

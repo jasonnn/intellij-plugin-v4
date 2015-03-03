@@ -61,7 +61,7 @@ public abstract class CopyAndPasteMeToImplementASTNode implements AntlrAST {
 
 
     IElementType elementType;
-    private final UserDataHolder dataHolder = new UserDataHolderBase();
+    private final UserDataHolderBase dataHolder = new UserDataHolderBase();
 
     @Override
     @Nullable
